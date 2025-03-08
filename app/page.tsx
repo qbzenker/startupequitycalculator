@@ -11,16 +11,16 @@ export default function Home() {
 				<ThemeSwitcher />
 			</header>
 
-			<main className="container mx-auto p-4 max-w-6xl flex-grow">
+			<main className="container mx-auto p-2 md:p-4 max-w-6xl flex-grow">
 				<h1 className="text-4xl font-bold mb-6 text-center">
 					Startup Equity Calculator
 				</h1>
-				<p className="text-muted-foreground mb-8 text-center max-w-2xl mx-auto">
-					Calculate the potential value of your startup equity based on various
+				<p className="text-muted-foreground px-4 mb-4 md:mb-8 text-center max-w-2xl mx-auto">
+					Estimate the potential value of your startup equity based on various
 					parameters
 				</p>
 
-				<div className="bg-card text-card-foreground rounded-lg border shadow-lg p-6">
+				<div className="bg-card text-card-foreground rounded-lg md:border md:shadow-lg p-6">
 					<EquityCalculator />
 				</div>
 
@@ -50,9 +50,8 @@ export default function Home() {
 						</p>
 					</div>
 				</div>
+				<Footer />
 			</main>
-
-			<Footer />
 		</div>
 	);
 }

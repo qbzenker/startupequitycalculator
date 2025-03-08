@@ -70,7 +70,7 @@ export default function EquityCalculator() {
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
 			{/* Left column - Inputs */}
-			<div className="space-y-6 ">
+			<div className="space-y-3 md:space-y-6">
 				<Divider className="mb-4 mt-0">Your Equity Details</Divider>
 				{/* <h2 className="text-xl font-semibold mb-4">Your Equity Details</h2> */}
 
@@ -78,7 +78,7 @@ export default function EquityCalculator() {
 					<label htmlFor="stockOptions" className="text-sm font-medium">
 						Total Stock Options
 					</label>
-					<div className="flex-grow max-w-48">
+					<div className="flex-grow max-w-40">
 						<Controller
 							name="stockOptions"
 							control={control}
@@ -104,7 +104,7 @@ export default function EquityCalculator() {
 					</div>
 				</div>
 
-				<div className="pl-5 border-l border-border space-y-6">
+				<div className="pl-5 border-l border-border space-y-4 md:space-y-6">
 					<div>
 						<div className="flex justify-between items-center mb-1.5">
 							<label htmlFor="vestedPercentage" className="text-sm font-medium">
@@ -240,7 +240,7 @@ export default function EquityCalculator() {
 						</span>
 					</label>
 
-					<div className="flex-grow max-w-48">
+					<div className="flex-grow max-w-40">
 						<Controller
 							name="totalCompanyShares"
 							control={control}
@@ -274,7 +274,7 @@ export default function EquityCalculator() {
 						>
 							Company Current Value
 						</label>
-						<div className="flex-grow max-w-48">
+						<div className="flex-grow max-w-40">
 							<Controller
 								name="companyCurrentValue"
 								control={control}
@@ -357,7 +357,7 @@ export default function EquityCalculator() {
 						>
 							Hypothetical Exit Value
 						</label>
-						<div className="flex-grow max-w-48">
+						<div className="flex-grow max-w-40">
 							<Controller
 								name="exitValue"
 								control={control}
@@ -503,12 +503,12 @@ export default function EquityCalculator() {
 			</div>
 			{results && (
 				<div>
-					<div className="space-y-20 mt-3">
+					<div className="space-y-6">
 						{/* Future Value Section */}
 						<div className="rounded-lg overflow-hidden">
-							<Card className="p-0 border-r-0 border-y-0 border-l-8 border-emerald-500 dark:border-emerald-400 rounded-none">
+							<Card className="px-0 py-2 border border-l-12 md:border-y-0 md:border-r-0 border-emerald-600 dark:border-emerald-400">
 								<CardHeader>
-									<CardTitle className="text-emerald-500 dark:text-emerald-400">
+									<CardTitle className="text-emerald-700 dark:text-emerald-400">
 										Future Equity Value
 									</CardTitle>
 								</CardHeader>
@@ -517,7 +517,7 @@ export default function EquityCalculator() {
 										<p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">
 											Total Future Equity Value
 										</p>
-										<p className="text-6xl font-bold dark:text-emerald-500 text-emerald-600">
+										<p className="text-4xl md:text-6xl font-bold text-emerald-600 dark:text-emerald-400">
 											{results.totalFutureEquityValue}
 										</p>
 									</div>
@@ -538,6 +538,16 @@ export default function EquityCalculator() {
 											</p>
 											<p className="text-xl font-semibold">
 												{results.futurePercentageOwnership}
+												<span className="text-xs text-muted-foreground ml-1 block md:inline">
+													diluted by{" "}
+													{(
+														Number.parseFloat(
+															results.initialPercentageOwnership,
+														) /
+														Number.parseFloat(results.futurePercentageOwnership)
+													).toFixed(1)}
+													X
+												</span>
 											</p>
 										</div>
 
@@ -565,9 +575,9 @@ export default function EquityCalculator() {
 
 						{/* Current Value Section */}
 						<div className="rounded-lg overflow-hidden">
-							<Card className="p-0 border-r-0 border-y-0 border-l-8 border-indigo-400 rounded-none">
+							<Card className="px-0 py-2 border border-l-12 md:border-y-0 md:border-r-0 border-blue-600 dark:border-blue-400">
 								<CardHeader>
-									<CardTitle className=" text-indigo-400">
+									<CardTitle className=" text-blue-700 dark:text-blue-400">
 										Current Equity Value
 									</CardTitle>
 								</CardHeader>
@@ -576,7 +586,7 @@ export default function EquityCalculator() {
 										<p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">
 											Current Equity Value
 										</p>
-										<p className="text-4xl font-bold text-indigo-500">
+										<p className="text-4xl md:text-6xl font-bold text-blue-600 dark:text-blue-400">
 											{results.currentEquityValue}
 										</p>
 									</div>
