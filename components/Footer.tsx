@@ -6,11 +6,12 @@ export default function Footer() {
 			<div className="container mx-auto px-4 text-center space-y-2">
 				<p className="text-muted-foreground">
 					Made with ❤️ by{" "}
+					<GitHubIcon className="inline-block mx-1 p-0 -translate-y-0.5 size-5" />
 					<Link
 						href="https://github.com/qbzenker"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-primary hover:text-primary/80 "
+						className="text-primary hover:text-primary/80 dark:text-white"
 					>
 						qbzenker
 					</Link>
@@ -21,10 +22,9 @@ export default function Footer() {
 						href="https://github.com/qbzenker/startup-equity-calculator"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-primary hover:text-primary/80 "
+						className="text-primary hover:text-primary/80 dark:text-white"
 					>
-						<GitHubIcon className="inline-block mx-1.5 p-0 -translate-y-0.5 size-5" />
-						Free & Open Source
+						Contribute
 					</Link>
 				</p>
 			</div>
