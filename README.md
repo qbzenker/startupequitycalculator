@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Startup Equity Calculator
 
-## Getting Started
+_Because spreadsheets weren't made for unicorn dreams_ 🦄
 
-First, run the development server:
+## What is this?
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+A calculator that turns your hypothetical millions into actual anxiety! This tool helps founders, employees, and investors visualize the potential value of their startup equity grants across different scenarios.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ever wondered what your 0.1% equity might be worth if your company becomes the next unicorn? Or perhaps you're just trying to justify working 80-hour weeks? Look no further!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Equity Value Calculation**: Input your grant details and see what your shares might be worth (or not worth)
+- **Multiple Scenarios**: Model different exit valuations because optimism comes in many sizes
+- **Vesting Schedule Visualization**: Watch your theoretical wealth accumulate over time
+- **Mobile Friendly**: Daydream about your paper fortune while commuting on the bus
+- **Dark Mode**: For when the reality of your equity value is too harsh in the light
 
-## Learn More
+## Why I Built This
 
-To learn more about Next.js, take a look at the following resources:
+I got tired of building the same spreadsheet over and over again every time I joined a startup or had a friend ask me "is this equity grant worth anything?" The answer is always "probably not, but maybe!" - now with `text-6xl` numbers!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Found a bug? Have a feature request? Want to add more taglines? Contributions are welcome!
 
-## Deploy on Vercel
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+Feel free to copy all the AI-generated code you want. Claude wrote most of it anyway, and it's probably better than what I would have come up with. If you build the next billion-dollar startup using this calculator, I accept thank-you notes and small percentages of equity (preferably fully-vested).
+
+## Disclaimer
+
+This calculator is for entertainment and educational purposes only. Any resemblance to actual startup outcomes is purely coincidental. Past performance is not indicative of future results. Your equity may be worth nothing. Or billions. Probably nothing though.
+
+## Acknowledgements
+
+- Shoutout to Claude for writing this README and most of the clever taglines
+- Special thanks to caffeine and optimism, the two core fuels of the startup ecosystem
+
+---
+
+_Made with optimism by [qbzenker](https://github.com/qbzenker)_
+
+_Converting sweat equity into sweet equity since 2024_ 💸
