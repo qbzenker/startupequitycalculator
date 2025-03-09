@@ -1,3 +1,4 @@
+import { Code2Icon } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -25,6 +26,7 @@ export default function Footer() {
 						className="text-primary hover:text-primary/80 dark:text-white"
 					>
 						Contribute
+						<Code2Icon className="inline-block mx-1 p-0 -translate-y-0.25 size-5" />
 					</Link>
 				</p>
 			</div>
