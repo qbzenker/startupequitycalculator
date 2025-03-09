@@ -20,7 +20,7 @@ export default function Footer() {
 				<p className="text-muted-foreground text-sm">
 					© {new Date().getFullYear()} | Startup Equity Calculator |{" "}
 					<Link
-						href="https://github.com/qbzenker/startup-equity-calculator"
+						href="https://github.com/qbzenker/startupequitycalculator"
 						target="_blank"
 						rel="noopener noreferrer"
 						className="text-primary hover:text-primary/80 dark:text-white"
