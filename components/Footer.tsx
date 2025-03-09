@@ -4,6 +4,9 @@ export default function Footer() {
 	return (
 		<footer className="py-6 mt-8">
 			<div className="container mx-auto px-4 text-center space-y-2">
+				<p className="text-muted-foreground text-sm">
+					Because who doesn&apos;t want to see their paper value explode? 🚀
+				</p>
 				<p className="text-muted-foreground">
 					Made with ❤️ by{" "}
 					<GitHubIcon className="inline-block mx-1 p-0 -translate-y-0.5 size-5" />
@@ -11,7 +14,7 @@ export default function Footer() {
 						href="https://github.com/qbzenker"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-primary hover:text-primary/80 dark:text-white"
+						className="text-primary hover:text-primary/80 dark:text-white "
 					>
 						qbzenker
 					</Link>

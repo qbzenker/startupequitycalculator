@@ -15,7 +15,7 @@ import { Input } from "./ui/input";
 
 // Define the schema for form validation with Zod
 const formSchema = z.object({
-	stockOptions: z.number().positive("Must be greater than 0"),
+	stockOptions: z.number().min(0, "Must be greater than 0"),
 	vestedPercentage: z.number().min(0).max(100),
 	strikePrice: z.number().min(0),
 	totalCompanyShares: z.number().positive("Must be greater than 0"),
@@ -88,7 +88,13 @@ export default function EquityCalculator() {
 									value={field.value}
 									thousandSeparator=","
 									onValueChange={(values) => {
-										field.onChange(values.floatValue);
+										// Only use the fallback value of 1 if the input is completely empty
+										// This allows for partial editing without resetting to 1
+										field.onChange(
+											values.floatValue !== undefined
+												? values.floatValue
+												: field.value,
+										);
 									}}
 									customInput={Input}
 									className="w-full px-3 py-2 text-right"
@@ -130,11 +136,9 @@ export default function EquityCalculator() {
 									step={1}
 									value={[field.value]}
 									defaultValue={[field.value]}
-									onValueChange={(value) =>
-										setValue("vestedPercentage", value[0], {
-											shouldValidate: true,
-										})
-									}
+									onValueChange={(value) => {
+										handleSliderChange("vestedPercentage", value);
+									}}
 								/>
 							)}
 						/>
@@ -168,9 +172,15 @@ export default function EquityCalculator() {
 								thousandSeparator=","
 								onValueChange={(values) => {
 									// Calculate percentage based on current stockOptions value
-									const vestedShares = values.floatValue || 0;
-									const newPercentage =
+									const vestedShares = values.floatValue ?? 0;
+									let newPercentage =
 										(vestedShares / formData.stockOptions) * 100;
+									if (Number.isNaN(newPercentage)) {
+										newPercentage = 0;
+									}
+									if (newPercentage === 0 && vestedShares === 0) {
+										newPercentage = 50; // Default to 50% if both are 0
+									}
 									// Clamp percentage between 0 and 100
 									const clampedPercentage = Math.min(
 										100,
@@ -240,7 +250,7 @@ export default function EquityCalculator() {
 						</span>
 					</label>
 
-					<div className="flex-grow max-w-40">
+					<div className="flex-grow max-w-48">
 						<Controller
 							name="totalCompanyShares"
 							control={control}
@@ -274,7 +284,7 @@ export default function EquityCalculator() {
 						>
 							Company Current Value
 						</label>
-						<div className="flex-grow max-w-40">
+						<div className="flex-grow max-w-48">
 							<Controller
 								name="companyCurrentValue"
 								control={control}
@@ -357,7 +367,7 @@ export default function EquityCalculator() {
 						>
 							Hypothetical Exit Value
 						</label>
-						<div className="flex-grow max-w-40">
+						<div className="flex-grow max-w-48">
 							<Controller
 								name="exitValue"
 								control={control}
