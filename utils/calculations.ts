@@ -50,7 +50,7 @@ export function calculateEquity(formData: any) {
 	const initialPercentageOwnership = (stockOptions / totalCompanyShares) * 100;
 
 	// Calculate dilution effect
-	const dilutionEffect = Math.pow(1 - dilutionPerRound / 100, fundingRounds);
+	const dilutionEffect = (1 - dilutionPerRound / 100) ** fundingRounds;
 
 	// Calculate future vested shares (assuming all options vest by exit)
 	const futureVestedShares = stockOptions;
