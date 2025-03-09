@@ -20,6 +20,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
+			<head>
+				<meta name="apple-mobile-web-app-title" content="StartupEq" />
+			</head>
 			<body
 				className={`${fontSans.className} antialiased min-h-screen transition-colors`}
 			>
