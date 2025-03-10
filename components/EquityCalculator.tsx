@@ -540,6 +540,17 @@ export default function EquityCalculator() {
 											<p className="text-xl font-semibold">
 												{results.futureVestedShares.toLocaleString()}
 											</p>
+											<p className="text-xs text-muted-foreground">
+												@{" $"}
+												{(
+													Number.parseFloat(
+														results.totalFutureEquityValue
+															.replace(/,/g, "")
+															.replace("$", ""),
+													) / results.futureVestedShares
+												).toFixed(2)}{" "}
+												p/s
+											</p>
 										</div>
 
 										<div className="space-y-1">
@@ -608,6 +619,17 @@ export default function EquityCalculator() {
 											</p>
 											<p className="text-xl font-base">
 												{results.vestedShares.toLocaleString()}
+											</p>
+											<p className="text-xs text-muted-foreground">
+												@{" $"}
+												{(
+													Number.parseFloat(
+														results.currentEquityValue
+															.replace(/,/g, "")
+															.replace("$", ""),
+													) / results.vestedShares
+												).toFixed(2)}{" "}
+												p/s
 											</p>
 										</div>
 
