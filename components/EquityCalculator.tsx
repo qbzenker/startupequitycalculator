@@ -192,6 +192,7 @@ export default function EquityCalculator() {
 								}}
 								customInput={Input}
 								className="w-full px-4 py-2 text-right"
+								min="0"
 							/>
 						</div>
 					</div>
@@ -395,7 +396,7 @@ export default function EquityCalculator() {
 										)}
 
 										<Input
-											type="text"
+											type="number"
 											id="exitValue"
 											value={field.value.replace(/[MB]$/, "")}
 											onChange={(e) => {
