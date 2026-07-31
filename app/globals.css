@@ -806,7 +806,7 @@ a {
   padding: 0 18px;
   border: 1px solid var(--green);
   background: var(--green);
-  color: #fffdf8;
+  color: var(--surface);
   box-shadow: 0 8px 20px color-mix(in srgb, var(--green) 18%, transparent);
 }
 
