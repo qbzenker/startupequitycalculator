@@ -1,5 +1,12 @@
 import type { EquityResult, EquityScenarioInput } from "./types";
 
+export class EquityCalculationError extends Error {
+  constructor() {
+    super("Equity calculations must produce finite values");
+    this.name = "EquityCalculationError";
+  }
+}
+
 function clampUnit(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
@@ -80,7 +87,7 @@ export function calculateEquity(input: EquityScenarioInput): EquityResult {
   const exitGrossValue = input.exitCompanyValue * ownershipAtExit;
   const exitExerciseCost = vestedSharesAtExit * input.strikePrice;
 
-  return {
+  const result = {
     vestedSharesToday,
     vestedSharesAtExit,
     currentOwnership,
@@ -93,4 +100,10 @@ export function calculateEquity(input: EquityScenarioInput): EquityResult {
     exitNetValue: exitGrossValue - exitExerciseCost,
     dilutionFactorAtExit,
   };
+
+  if (Object.values(result).some((value) => !Number.isFinite(value))) {
+    throw new EquityCalculationError();
+  }
+
+  return result;
 }

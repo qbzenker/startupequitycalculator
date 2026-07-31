@@ -4,7 +4,7 @@ import type { EquityScenarioInput, SavedScenario } from "./types";
 
 export const MAX_SAVED_SCENARIOS = 2;
 
-const SNAPSHOT_COLORS = ["#DF7253", "#D5A538"] as const;
+const SNAPSHOT_COLORS = ["#DF7253", "#876408"] as const;
 
 export class ComparisonLimitError extends Error {
   constructor() {
@@ -26,11 +26,7 @@ function getNextSlot(saved: readonly SavedScenario[]): number {
 }
 
 function getGeneratedName(saved: readonly SavedScenario[]): string {
-  if (!saved.some((scenario) => scenario.name === "Baseline")) {
-    return "Baseline";
-  }
-
-  return "Scenario 2";
+  return saved.length === 0 ? "Baseline" : "Scenario 2";
 }
 
 export function saveScenario(

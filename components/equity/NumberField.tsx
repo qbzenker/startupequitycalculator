@@ -44,6 +44,7 @@ export function NumberField({
       <div className="field-control">
         <NumericFormat
           id={id}
+          name={id}
           value={value ?? ""}
           onValueChange={({ floatValue }) => onChange(floatValue ?? null)}
           onBlur={onBlur}

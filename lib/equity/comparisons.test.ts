@@ -40,7 +40,7 @@ describe("scenario comparisons", () => {
       "Baseline",
       "Scenario 2",
     ]);
-    expect(second[1]?.color).toBe("#D5A538");
+    expect(second[1]?.color).toBe("#876408");
   });
 
   it("rejects a third saved snapshot because the active scenario is visible", () => {
@@ -65,6 +65,20 @@ describe("scenario comparisons", () => {
 
     expect(renamed[0]?.name).toBe("Lower exit");
     expect(unchanged[0]?.name).toBe("Lower exit");
+  });
+
+  it("uses snapshot order for generated names after Baseline is renamed", () => {
+    const baseline = saveScenario([], DEFAULT_PRESET.input);
+    const renamed = renameScenario(baseline, "saved-1", "Downside");
+    const saved = saveScenario(renamed, {
+      ...DEFAULT_PRESET.input,
+      exitCompanyValue: 2_000_000_000,
+    });
+
+    expect(saved.map((scenario) => scenario.name)).toEqual([
+      "Downside",
+      "Scenario 2",
+    ]);
   });
 
   it("removes only the targeted scenario", () => {

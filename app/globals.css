@@ -7,13 +7,14 @@
   --surface-muted: #ece9df;
   --ink: #18251e;
   --ink-soft: #566159;
-  --ink-faint: #747c76;
+  --ink-faint: #5e695f;
   --border: #d9d6cc;
   --border-strong: #aaa99f;
   --green: #1f7a52;
   --green-deep: #165b3d;
   --green-soft: #dcecdf;
   --coral: #df7253;
+  --error-text: #9e3f29;
   --coral-soft: #f8e1da;
   --gold: #d5a538;
   --gold-soft: #f6ebc9;
@@ -39,6 +40,7 @@
   --green-deep: #8bd8ae;
   --green-soft: #203c2d;
   --coral: #f09175;
+  --error-text: #f4a086;
   --coral-soft: #482a23;
   --gold: #e8bd57;
   --gold-soft: #44391d;
@@ -57,7 +59,7 @@
   --color-border: var(--border);
   --color-primary: var(--green);
   --color-primary-foreground: var(--surface);
-  --color-destructive: var(--coral);
+  --color-destructive: var(--error-text);
   --font-sans: var(--font-manrope);
   --font-serif: var(--font-newsreader);
 }
@@ -441,6 +443,22 @@ a {
     linear-gradient(135deg, color-mix(in srgb, var(--coral-soft) 88%, var(--surface)) 0%, var(--surface) 74%);
 }
 
+.result-panel-error {
+  min-height: 290px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--gold-soft) 88%, var(--surface)) 0%, var(--surface) 76%);
+}
+
+.result-error-copy {
+  max-width: 540px;
+  margin: 14px 0 20px;
+  color: var(--ink-soft);
+}
+
 .result-panel-negative .eyebrow,
 .result-panel-negative .headline-value {
   color: var(--coral);
@@ -583,6 +601,31 @@ a {
   background: repeating-linear-gradient(90deg, var(--coral) 0 4px, transparent 4px 7px);
 }
 
+.chart-legend .legend-comparison::before {
+  height: 2px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--scenario-color) 0 7px,
+      transparent 7px 10px
+    );
+}
+
+.chart-legend .legend-comparison-2::before {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--scenario-color) 0 2px,
+      transparent 2px 5px
+    );
+}
+
+.chart-instructions {
+  margin: 12px 0 0;
+  color: var(--ink-faint);
+  font-size: 10px;
+}
+
 .timeline-chart {
   width: 100%;
   height: 310px;
@@ -607,6 +650,50 @@ a {
   box-shadow: var(--shadow-card);
   color: var(--ink) !important;
   font-size: 11px;
+}
+
+.timeline-tooltip {
+  max-width: 250px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-card);
+  color: var(--ink);
+  font-size: 10px;
+}
+
+.timeline-tooltip > p:first-child {
+  margin: 0 0 8px;
+  font-weight: 850;
+}
+
+.timeline-tooltip dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px 12px;
+  margin: 0;
+}
+
+.timeline-tooltip dt {
+  color: var(--ink-faint);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.timeline-tooltip dd {
+  margin: 1px 0 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+}
+
+.tooltip-comparison {
+  margin: 8px 0 0;
+  padding-top: 7px;
+  border-top: 1px solid var(--border);
+  font-weight: 700;
 }
 
 .event-rail {
@@ -740,7 +827,7 @@ a {
 
 .field-error {
   margin: 5px 0 0;
-  color: var(--coral);
+  color: var(--error-text);
   font-size: 10px;
   font-weight: 700;
   text-align: right;
@@ -854,18 +941,9 @@ a {
   font-weight: 800;
 }
 
-.comparison-card-heading > span {
-  font-family: var(--font-newsreader), Georgia, serif;
-  font-size: 22px;
-  font-variant-numeric: tabular-nums;
-  font-weight: 550;
-  letter-spacing: -0.03em;
-  white-space: nowrap;
-}
-
 .scenario-name-input {
   min-width: 0;
-  min-height: 38px;
+  min-height: 44px;
   max-width: 140px;
   padding: 0 9px;
   background: var(--surface);
@@ -888,6 +966,19 @@ a {
   font-weight: 750;
 }
 
+.comparison-net-value {
+  grid-column: 1 / -1;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.comparison-net-value dd {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 24px;
+  font-weight: 560;
+  letter-spacing: -0.03em;
+}
+
 .comparison-card-actions {
   display: flex;
   gap: 7px;
@@ -895,14 +986,14 @@ a {
 }
 
 .comparison-card-actions button {
-  min-height: 38px;
+  min-height: 44px;
   padding: 0 11px;
   border: 1px solid var(--border);
   background: var(--surface);
 }
 
 .comparison-card-actions button:last-child {
-  color: var(--coral);
+  color: var(--error-text);
 }
 
 .methodology {

@@ -1,4 +1,5 @@
 import {
+  EquityCalculationError,
   getCompletedRoundsAtMonth,
   getDilutionFactor,
   getVestedSharesAtMonth,
@@ -115,6 +116,14 @@ export function generateTimeline(input: EquityScenarioInput): {
       netValue: grossValue - exerciseCost,
     };
   });
+
+  if (
+    points.some((point) =>
+      Object.values(point).some((value) => !Number.isFinite(value)),
+    )
+  ) {
+    throw new EquityCalculationError();
+  }
 
   return {
     points,

@@ -46,7 +46,6 @@ function ScenarioCard({
             onBlur={(event) => onRename?.(scenario.id, event.target.value)}
           />
         )}
-        <span>{formatCurrency(scenario.result.exitNetValue)}</span>
       </div>
 
       <dl>
@@ -55,8 +54,20 @@ function ScenarioCard({
           <dd>{formatCurrency(scenario.input.exitCompanyValue)}</dd>
         </div>
         <div>
-          <dt>Ownership</dt>
+          <dt>Dilution</dt>
+          <dd>{scenario.input.dilutionPerRound}% per round</dd>
+        </div>
+        <div>
+          <dt>Ownership at exit</dt>
           <dd>{formatOwnership(scenario.result.ownershipAtExit)}</dd>
+        </div>
+        <div>
+          <dt>Exercise cost</dt>
+          <dd>{formatCurrency(scenario.result.exitExerciseCost)}</dd>
+        </div>
+        <div className="comparison-net-value">
+          <dt>Net value</dt>
+          <dd>{formatCurrency(scenario.result.exitNetValue)}</dd>
         </div>
       </dl>
 

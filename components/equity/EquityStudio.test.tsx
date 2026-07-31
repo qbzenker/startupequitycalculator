@@ -165,6 +165,26 @@ describe("EquityStudio", () => {
     expect(within(result).getByText("Ownership at exit")).toBeInTheDocument();
   });
 
+  it("labels all five comparison metrics", () => {
+    render(<EquityStudio />);
+
+    const activeCard = screen
+      .getByRole("heading", { name: "Active scenario" })
+      .closest("article");
+
+    expect(activeCard).not.toBeNull();
+    const card = within(activeCard as HTMLElement);
+
+    expect(card.getByText("Exit value")).toBeInTheDocument();
+    expect(card.getByText("Dilution")).toBeInTheDocument();
+    expect(card.getByText("Ownership at exit")).toBeInTheDocument();
+    expect(card.getByText("Exercise cost")).toBeInTheDocument();
+    expect(card.getByText("Net value")).toBeInTheDocument();
+    expect(card.getByText("18% per round")).toBeInTheDocument();
+    expect(card.getByText("$25,000")).toBeInTheDocument();
+    expect(card.getByText("$983,600")).toBeInTheDocument();
+  });
+
   it("keeps negative outcomes visible and explains them", async () => {
     const user = userEvent.setup();
     render(<EquityStudio />);
@@ -193,7 +213,9 @@ describe("EquityStudio", () => {
     render(<EquityStudio />);
 
     expect(
-      screen.getByRole("img", { name: "Equity value over time" }),
+      screen.getByRole("region", {
+        name: "Interactive equity value over time chart",
+      }),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Today: 0 vested shares and $0 net value."),

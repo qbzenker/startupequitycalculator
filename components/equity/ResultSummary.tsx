@@ -14,13 +14,33 @@ interface ResultSummaryProps {
   input: EquityScenarioInput;
   result: EquityResult;
   isStale: boolean;
+  error?: string;
+  onReset?: () => void;
 }
 
 export function ResultSummary({
   input,
   result,
   isStale,
+  error,
+  onReset,
 }: ResultSummaryProps) {
+  if (error) {
+    return (
+      <section
+        className="result-panel result-panel-error"
+        aria-labelledby="result-title"
+      >
+        <p className="eyebrow">The model paused safely</p>
+        <h2 id="result-title">We couldn&apos;t model this scenario</h2>
+        <p className="result-error-copy">{error}</p>
+        <button type="button" className="primary-button" onClick={onReset}>
+          Reset scenario
+        </button>
+      </section>
+    );
+  }
+
   const hasNegativeOutcome = result.exitNetValue < 0;
 
   return (
@@ -40,6 +60,10 @@ export function ResultSummary({
 
       <p className="headline-value">
         {formatCompactCurrency(result.exitNetValue)}
+        <span className="sr-only">
+          {" "}
+          Exact value: {formatCurrency(result.exitNetValue)}.
+        </span>
       </p>
       <p className="result-caption">
         At exit, after the modeled exercise cost and future dilution.

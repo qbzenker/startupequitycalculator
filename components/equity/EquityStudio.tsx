@@ -43,12 +43,16 @@ export function EquityStudio() {
             input={studio.validInput}
             result={studio.result}
             isStale={studio.isUsingPreviousResult}
+            error={studio.calculationError}
+            onReset={studio.resetScenario}
           />
-          <EquityTimeline
-            active={studio.activeScenario}
-            comparisons={studio.savedScenarios}
-            events={studio.timeline.events}
-          />
+          {studio.calculationError ? null : (
+            <EquityTimeline
+              active={studio.activeScenario}
+              comparisons={studio.savedScenarios}
+              events={studio.timeline.events}
+            />
+          )}
         </div>
 
         <AssumptionsPanel

@@ -33,7 +33,18 @@ type ChartDatum = {
   month: number;
   active?: number;
   exercise?: number;
+  vestedShares?: number;
+  ownership?: number;
+  companyValue?: number;
+  grossValue?: number;
 } & Record<string, number | undefined>;
+
+interface TimelineTooltipContentProps {
+  active?: boolean;
+  label?: string | number;
+  payload?: ReadonlyArray<{ payload?: ChartDatum }>;
+  comparisons?: SavedScenario[];
+}
 
 function createChartData(
   active: SavedScenario,
@@ -57,6 +68,10 @@ function createChartData(
     const datum = getPoint(point.month);
     datum.active = point.netValue;
     datum.exercise = point.exerciseCost;
+    datum.vestedShares = point.vestedShares;
+    datum.ownership = point.ownership;
+    datum.companyValue = point.companyValue;
+    datum.grossValue = point.grossValue;
   });
 
   comparisons.forEach((scenario) => {
@@ -80,6 +95,60 @@ function formatMonth(month: number): string {
   return `${month}m`;
 }
 
+export function TimelineTooltipContent({
+  active,
+  label,
+  payload,
+  comparisons = [],
+}: TimelineTooltipContentProps) {
+  const point = payload?.[0]?.payload;
+
+  if (!active || !point) {
+    return null;
+  }
+
+  return (
+    <div className="timeline-tooltip">
+      <p>Month {label}</p>
+      {point.vestedShares === undefined ? null : (
+        <dl>
+          <div>
+            <dt>Vested shares</dt>
+            <dd>{formatShares(point.vestedShares)}</dd>
+          </div>
+          <div>
+            <dt>Ownership</dt>
+            <dd>{formatOwnership(point.ownership ?? 0)}</dd>
+          </div>
+          <div>
+            <dt>Company value</dt>
+            <dd>{formatCurrency(point.companyValue ?? 0)}</dd>
+          </div>
+          <div>
+            <dt>Gross equity value</dt>
+            <dd>{formatCurrency(point.grossValue ?? 0)}</dd>
+          </div>
+          <div>
+            <dt>Exercise cost</dt>
+            <dd>{formatCurrency(point.exercise ?? 0)}</dd>
+          </div>
+          <div>
+            <dt>Net value</dt>
+            <dd>{formatCurrency(point.active ?? 0)}</dd>
+          </div>
+        </dl>
+      )}
+      {comparisons.map((scenario) =>
+        point[scenario.id] === undefined ? null : (
+          <p key={scenario.id} className="tooltip-comparison">
+            {scenario.name}: {formatCurrency(point[scenario.id] ?? 0)} net
+          </p>
+        ),
+      )}
+    </div>
+  );
+}
+
 export function EquityTimeline({
   active,
   comparisons,
@@ -98,19 +167,40 @@ export function EquityTimeline({
         <div className="chart-legend" aria-label="Chart legend">
           <span className="legend-active">Net value</span>
           <span className="legend-cost">Exercise cost</span>
+          {comparisons.map((scenario, index) => (
+            <span
+              key={scenario.id}
+              className={`legend-comparison legend-comparison-${index + 1}`}
+              style={
+                {
+                  "--scenario-color": scenario.color,
+                } as React.CSSProperties
+              }
+            >
+              {scenario.name}
+            </span>
+          ))}
         </div>
       </div>
 
+      <p id="timeline-instructions" className="chart-instructions">
+        Use arrow keys to explore the interactive chart. The written summary
+        below provides the same essential endpoints.
+      </p>
       <div
         className="timeline-chart"
-        role="img"
-        aria-label="Equity value over time"
+        role="region"
+        aria-label="Interactive equity value over time chart"
+        aria-describedby="timeline-instructions"
       >
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={data}
             margin={{ top: 22, right: 8, bottom: 0, left: 0 }}
             accessibilityLayer
+            role="application"
+            aria-label="Explore equity values by month"
+            aria-describedby="timeline-instructions"
           >
             <defs>
               <linearGradient id="active-value-fill" x1="0" y1="0" x2="0" y2="1">
@@ -133,11 +223,10 @@ export function EquityTimeline({
               width={58}
             />
             <Tooltip
-              formatter={(value, name) => [
-                formatCurrency(Number(value)),
-                name === "active" ? "Active net value" : String(name),
-              ]}
-              labelFormatter={(month) => `Month ${month}`}
+              content={
+                <TimelineTooltipContent comparisons={comparisons} />
+              }
+              isAnimationActive={false}
             />
             <Area
               type="monotone"
@@ -160,7 +249,7 @@ export function EquityTimeline({
               isAnimationActive={false}
               connectNulls
             />
-            {comparisons.map((scenario) => (
+            {comparisons.map((scenario, index) => (
               <Line
                 key={scenario.id}
                 type="monotone"
@@ -168,6 +257,7 @@ export function EquityTimeline({
                 name={scenario.name}
                 stroke={scenario.color}
                 strokeWidth={2}
+                strokeDasharray={index === 0 ? "8 4" : "2 4"}
                 dot={false}
                 isAnimationActive={false}
                 connectNulls
@@ -179,6 +269,7 @@ export function EquityTimeline({
                 x={event.month}
                 stroke="var(--border-strong)"
                 strokeDasharray="2 5"
+                aria-label={event.label}
               />
             ))}
           </ComposedChart>

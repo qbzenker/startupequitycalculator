@@ -133,4 +133,17 @@ describe("equityScenarioSchema", () => {
       }).success,
     ).toBe(false);
   });
+
+  it("rejects finite inputs large enough to overflow modeled results", () => {
+    expect(
+      equityScenarioSchema.safeParse({
+        ...VALID_SCENARIO,
+        grantShares: 1e308,
+        totalCompanyShares: 1e308,
+        strikePrice: 1e308,
+        currentCompanyValue: 1e308,
+        exitCompanyValue: 1e308,
+      }).success,
+    ).toBe(false);
+  });
 });

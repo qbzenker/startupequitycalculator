@@ -101,4 +101,17 @@ describe("generateTimeline", () => {
       expect.arrayContaining(["fully-vested-48", "exit-48"]),
     );
   });
+
+  it("rejects non-finite timeline points if validation is bypassed", () => {
+    expect(() =>
+      generateTimeline({
+        ...DEFAULT_PRESET.input,
+        grantShares: 1e308,
+        strikePrice: 1e308,
+        totalCompanyShares: 1,
+        currentCompanyValue: 1e308,
+        exitCompanyValue: 1e308,
+      }),
+    ).toThrow("finite");
+  });
 });

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
-import { calculateEquity } from "@/lib/equity/calculate";
 import {
   ComparisonLimitError,
   removeScenario,
@@ -16,8 +15,8 @@ import {
   findMatchingPreset,
   getPresetInput,
 } from "@/lib/equity/presets";
+import { buildEquityProjection } from "@/lib/equity/projection";
 import { equityScenarioSchema } from "@/lib/equity/schema";
-import { generateTimeline } from "@/lib/equity/timeline";
 import type {
   EquityMode,
   EquityScenarioInput,
@@ -55,8 +54,8 @@ export function useEquityStudio() {
   const [comparisonMessage, setComparisonMessage] = useState("");
 
   const validInput = parsed.success ? parsed.data : lastValidInput;
-  const result = calculateEquity(validInput);
-  const timeline = generateTimeline(validInput);
+  const projection = buildEquityProjection(validInput);
+  const { result, timeline } = projection;
   const activeScenario: SavedScenario = {
     id: "active",
     name: "Active scenario",
@@ -115,6 +114,11 @@ export function useEquityStudio() {
   }
 
   function saveActiveScenario() {
+    if (projection.error) {
+      setComparisonMessage(projection.error);
+      return;
+    }
+
     try {
       const next = saveScenario(savedScenarios, validInput);
       setSavedScenarios(next);
@@ -160,6 +164,7 @@ export function useEquityStudio() {
     activeScenario,
     savedScenarios,
     comparisonMessage,
+    calculationError: projection.error,
     activePreset,
     issues,
     isUsingPreviousResult: !parsed.success,

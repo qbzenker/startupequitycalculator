@@ -120,4 +120,17 @@ describe("calculateEquity", () => {
     expect(result.exitExerciseCost).toBe(2_000_000);
     expect(result.exitNetValue).toBe(-1_999_000);
   });
+
+  it("rejects non-finite calculated outputs even if validation is bypassed", () => {
+    expect(() =>
+      calculateEquity({
+        ...DEFAULT_PRESET.input,
+        grantShares: 1e308,
+        strikePrice: 1e308,
+        totalCompanyShares: 1,
+        currentCompanyValue: 1e308,
+        exitCompanyValue: 1e308,
+      }),
+    ).toThrow("finite");
+  });
 });
