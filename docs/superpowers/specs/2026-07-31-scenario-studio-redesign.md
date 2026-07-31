@@ -191,14 +191,14 @@ The mobile page does not place every input before the answer and does not use a 
 
 ### Comparison
 
-`Compare this scenario` saves a snapshot of the active scenario. Users may compare the baseline plus two alternatives.
+`Compare this scenario` saves a snapshot of the active scenario. Users may compare the editable active scenario plus two saved snapshots, for three visible scenarios total.
 
-- A saved snapshot receives a concise generated name and distinct chart color.
-- The active scenario remains editable.
+- The first saved snapshot is named `Baseline`; the second is named `Scenario 2`. Both receive distinct chart colors.
+- The active scenario remains editable and uses the primary chart color.
 - Each comparison can be selected, renamed, or removed.
 - The chart overlays net-value lines for all saved scenarios.
 - A compact comparison table shows exit value, dilution, ownership at exit, exercise cost, and net value.
-- When the three-scenario limit is reached, the interface explains which scenario must be removed before another can be saved.
+- When two snapshots are saved, the interface explains that one must be removed before the active scenario can be saved again.
 
 Comparisons exist only in the current browser session. Persistence, accounts, and shareable URLs are outside this redesign.
 
