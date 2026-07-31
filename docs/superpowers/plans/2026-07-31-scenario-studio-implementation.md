@@ -6,7 +6,7 @@
 
 **Architecture:** Pure TypeScript modules own validation, presets, calculations, timeline generation, formatting, and comparison behavior. A client-side React studio consumes those modules through focused components; the App Router page remains a server component shell. All displayed results and chart points come from the same validated numeric scenario.
 
-**Tech Stack:** Next.js 16.2.12, React 19.2.8, TypeScript 7.0.2, Tailwind CSS 4.3.3, Zod 4.4.3, React Hook Form 7.83.0, Recharts 3.10.1, Vitest 4.1.10, Testing Library 16.3.2, Bun 1.3.x
+**Tech Stack:** Next.js 16.2.12, React 19.2.8, TypeScript 6.0.3, Tailwind CSS 4.3.3, Zod 4.4.3, React Hook Form 7.83.0, Recharts 3.10.1, Vitest 4.1.10, Testing Library 16.3.2, Bun 1.3.x
 
 ## Global Constraints
 
@@ -151,11 +151,11 @@ Update the `scripts`, `dependencies`, and `devDependencies` sections of `package
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@types/react-is": "19.2.0",
-    "eslint": "10.8.0",
+    "eslint": "9.39.5",
     "eslint-config-next": "16.2.12",
     "jsdom": "30.0.1",
     "tailwindcss": "4.3.3",
-    "typescript": "7.0.2",
+    "typescript": "6.0.3",
     "vitest": "4.1.10"
   }
 }

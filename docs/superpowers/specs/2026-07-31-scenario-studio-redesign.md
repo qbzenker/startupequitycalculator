@@ -405,6 +405,11 @@ During implementation:
 - accept no unresolved peer-dependency warnings;
 - document any package that cannot use its latest release and the exact compatibility reason.
 
+Compatibility exception discovered during implementation:
+
+- TypeScript is pinned to `6.0.3` instead of `7.0.2` because the `typescript-eslint` version bundled with `eslint-config-next@16.2.12` explicitly rejects the TypeScript 7 API. The pin should be revisited when Next.js ships a TypeScript 7-compatible ESLint stack.
+- ESLint is pinned to `9.39.5` instead of `10.8.0` because the React ESLint plugin bundled with `eslint-config-next@16.2.12` calls a context API removed in ESLint 10. The pin should be revisited with the same Next.js ESLint-stack upgrade.
+
 The globally installed Vercel CLI is outside the repository dependency graph and should be upgraded separately from `56.2.1` to the current release with:
 
 ```bash
