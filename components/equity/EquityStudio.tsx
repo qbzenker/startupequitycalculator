@@ -1,9 +1,10 @@
 "use client";
 
-import { formatCompactCurrency } from "@/lib/equity/format";
-
 import { AssumptionsPanel } from "./AssumptionsPanel";
+import { ComparisonTray } from "./ComparisonTray";
+import { EquityTimeline } from "./EquityTimeline";
 import { ModeSwitch } from "./ModeSwitch";
+import { ResultSummary } from "./ResultSummary";
 import { ScenarioChips } from "./ScenarioChips";
 import { useEquityStudio } from "./useEquityStudio";
 
@@ -29,21 +30,18 @@ export function EquityStudio() {
       </div>
 
       <div className="studio-workspace">
-        <section className="result-panel" aria-labelledby="result-title">
-          <p className="eyebrow">Your modeled outcome</p>
-          <h2 id="result-title">Potential net value at exit</h2>
-          <output className="headline-value">
-            {formatCompactCurrency(studio.result.exitNetValue)}
-          </output>
-          <p>
-            At exit, after the modeled exercise cost and future dilution.
-          </p>
-          {studio.isUsingPreviousResult ? (
-            <p className="stale-result-note">
-              Results use your last valid assumptions.
-            </p>
-          ) : null}
-        </section>
+        <div className="outcome-column">
+          <ResultSummary
+            input={studio.validInput}
+            result={studio.result}
+            isStale={studio.isUsingPreviousResult}
+          />
+          <EquityTimeline
+            active={studio.activeScenario}
+            comparisons={studio.savedScenarios}
+            events={studio.timeline.events}
+          />
+        </div>
 
         <AssumptionsPanel
           form={studio.form}
@@ -51,6 +49,16 @@ export function EquityStudio() {
           onFieldChange={studio.updateLastValidField}
         />
       </div>
+
+      <ComparisonTray
+        active={studio.activeScenario}
+        saved={studio.savedScenarios}
+        message={studio.comparisonMessage}
+        onSave={studio.saveActiveScenario}
+        onRename={studio.renameSavedScenario}
+        onRemove={studio.removeSavedScenario}
+        onLoad={studio.loadSavedScenario}
+      />
 
       <p className="sr-only" aria-live="polite">
         {studio.activePreset

@@ -5,6 +5,12 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { calculateEquity } from "@/lib/equity/calculate";
 import {
+  ComparisonLimitError,
+  removeScenario,
+  renameScenario,
+  saveScenario,
+} from "@/lib/equity/comparisons";
+import {
   DEFAULT_PRESET,
   changeScenarioMode,
   findMatchingPreset,
@@ -15,6 +21,7 @@ import { generateTimeline } from "@/lib/equity/timeline";
 import type {
   EquityMode,
   EquityScenarioInput,
+  SavedScenario,
   ScenarioPreset,
 } from "@/lib/equity/types";
 
@@ -44,10 +51,20 @@ export function useEquityStudio() {
   const [lastValidInput, setLastValidInput] = useState<EquityScenarioInput>({
     ...DEFAULT_PRESET.input,
   });
+  const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>([]);
+  const [comparisonMessage, setComparisonMessage] = useState("");
 
   const validInput = parsed.success ? parsed.data : lastValidInput;
   const result = calculateEquity(validInput);
   const timeline = generateTimeline(validInput);
+  const activeScenario: SavedScenario = {
+    id: "active",
+    name: "Active scenario",
+    color: "#1F7A52",
+    input: validInput,
+    result,
+    timeline: timeline.points,
+  };
   const activePreset = parsed.success
     ? findMatchingPreset(parsed.data)
     : undefined;
@@ -91,17 +108,61 @@ export function useEquityStudio() {
     }
   }
 
+  function saveActiveScenario() {
+    try {
+      const next = saveScenario(savedScenarios, validInput);
+      setSavedScenarios(next);
+      setComparisonMessage(`${next.at(-1)?.name ?? "Scenario"} saved.`);
+    } catch (error) {
+      if (error instanceof ComparisonLimitError) {
+        setComparisonMessage(error.message);
+        return;
+      }
+
+      throw error;
+    }
+  }
+
+  function renameSavedScenario(id: string, name: string) {
+    setSavedScenarios((current) => renameScenario(current, id, name));
+  }
+
+  function removeSavedScenario(id: string) {
+    setSavedScenarios((current) => removeScenario(current, id));
+    setComparisonMessage("Snapshot removed.");
+  }
+
+  function loadSavedScenario(id: string) {
+    const scenario = savedScenarios.find((item) => item.id === id);
+
+    if (!scenario) {
+      return;
+    }
+
+    const nextInput = { ...scenario.input };
+    setLastValidInput(nextInput);
+    form.reset(toFormValues(nextInput));
+    setComparisonMessage(`${scenario.name} loaded into the active scenario.`);
+  }
+
   return {
     form,
     watched,
     validInput,
     result,
     timeline,
+    activeScenario,
+    savedScenarios,
+    comparisonMessage,
     activePreset,
     issues,
     isUsingPreviousResult: !parsed.success,
     selectPreset,
     setMode,
     updateLastValidField,
+    saveActiveScenario,
+    renameSavedScenario,
+    removeSavedScenario,
+    loadSavedScenario,
   };
 }

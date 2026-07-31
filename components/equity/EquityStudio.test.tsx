@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
@@ -130,5 +130,114 @@ describe("EquityStudio", () => {
 
     expect(earlyEmployee).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByLabelText("Grant size")).toHaveValue("40,000");
+  });
+
+  it("shows the headline result with decision-relevant supporting metrics", () => {
+    render(<EquityStudio />);
+
+    const result = screen.getByRole("region", {
+      name: "Potential net value at exit",
+    });
+
+    expect(within(result).getByText("$983.6K")).toBeInTheDocument();
+    expect(within(result).getByText("$25,000")).toBeInTheDocument();
+    expect(within(result).getByText("0.067%")).toBeInTheDocument();
+    expect(within(result).getByText("Current vested net")).toBeInTheDocument();
+    expect(within(result).getByText("Exercise at exit")).toBeInTheDocument();
+    expect(within(result).getByText("Ownership at exit")).toBeInTheDocument();
+  });
+
+  it("keeps negative outcomes visible and explains them", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    const strikePrice = screen.getByLabelText("Strike price");
+    await user.clear(strikePrice);
+    await user.type(strikePrice, "100");
+
+    const exitValue = screen.getByLabelText("Potential exit value");
+    await user.clear(exitValue);
+    await user.type(exitValue, "1000000");
+
+    const rounds = screen.getByLabelText("Future funding rounds");
+    await user.clear(rounds);
+    await user.type(rounds, "0");
+
+    expect(screen.getByText("-$2M")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "In this scenario, exercising costs more than the modeled shares are worth.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("provides an accessible chart and equivalent endpoint summary", () => {
+    render(<EquityStudio />);
+
+    expect(
+      screen.getByRole("img", { name: "Equity value over time" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Today: 0 vested shares and $0 net value."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "At exit: 20,000 vested shares, 0.067% ownership, $25,000 exercise cost, and $983,600 net value.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("saves, renames, loads, and removes comparison snapshots", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    await user.click(
+      screen.getByRole("button", { name: "Compare this scenario" }),
+    );
+    expect(screen.getByLabelText("Rename Baseline")).toBeInTheDocument();
+
+    const exitValue = screen.getByLabelText("Potential exit value");
+    await user.clear(exitValue);
+    await user.type(exitValue, "2000000000");
+    await user.click(
+      screen.getByRole("button", { name: "Compare this scenario" }),
+    );
+    expect(screen.getByLabelText("Rename Scenario 2")).toBeInTheDocument();
+
+    const baselineName = screen.getByLabelText("Rename Baseline");
+    await user.clear(baselineName);
+    await user.type(baselineName, "Downside");
+    await user.tab();
+    expect(screen.getByLabelText("Rename Downside")).toHaveValue("Downside");
+
+    await user.click(
+      screen.getByRole("button", { name: "Load Downside" }),
+    );
+    expect(screen.getByLabelText("Potential exit value")).toHaveValue(
+      "$1,500,000,000",
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Remove Scenario 2" }),
+    );
+    expect(
+      screen.queryByLabelText("Rename Scenario 2"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("announces the three-visible-scenario limit", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+    const compare = screen.getByRole("button", {
+      name: "Compare this scenario",
+    });
+
+    await user.click(compare);
+    await user.click(compare);
+    await user.click(compare);
+
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Two snapshots are already saved. Remove one before saving the active scenario again.",
+    );
   });
 });
