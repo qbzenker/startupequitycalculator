@@ -3,9 +3,10 @@
 import { AssumptionsPanel } from "./AssumptionsPanel";
 import { ComparisonTray } from "./ComparisonTray";
 import { EquityTimeline } from "./EquityTimeline";
-import { ModeSwitch } from "./ModeSwitch";
+import { Methodology } from "./Methodology";
 import { ResultSummary } from "./ResultSummary";
 import { ScenarioChips } from "./ScenarioChips";
+import { StudioHeader } from "./StudioHeader";
 import { useEquityStudio } from "./useEquityStudio";
 
 export function EquityStudio() {
@@ -14,14 +15,21 @@ export function EquityStudio() {
 
   return (
     <div className="equity-studio">
+      <StudioHeader mode={mode} onModeChange={studio.setMode} />
+
       <div className="studio-intro">
-        <ModeSwitch value={mode} onChange={studio.setMode} />
-        <div>
+        <div className="intro-heading">
           <p className="eyebrow">A clearer way to read the fine print</p>
           <h1>What could your startup equity become?</h1>
           <p className="intro-copy">
-            Model the upside, the dilution, and what it may cost to own.
+            See the upside, the dilution, and what it may cost to own—before
+            one optimistic number makes the decision for you.
           </p>
+        </div>
+        <div className="intro-note" aria-hidden="true">
+          <span>Model</span>
+          <strong>01</strong>
+          <small>Adjust the story. Keep the math honest.</small>
         </div>
         <ScenarioChips
           activeId={studio.activePreset?.id}
@@ -46,6 +54,7 @@ export function EquityStudio() {
         <AssumptionsPanel
           form={studio.form}
           issues={studio.issues}
+          onReset={studio.resetScenario}
           onFieldChange={studio.updateLastValidField}
         />
       </div>
@@ -59,6 +68,8 @@ export function EquityStudio() {
         onRemove={studio.removeSavedScenario}
         onLoad={studio.loadSavedScenario}
       />
+
+      <Methodology />
 
       <p className="sr-only" aria-live="polite">
         {studio.activePreset

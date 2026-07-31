@@ -114,11 +114,11 @@ export function EquityTimeline({
           >
             <defs>
               <linearGradient id="active-value-fill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1F7A52" stopOpacity={0.24} />
-                <stop offset="100%" stopColor="#1F7A52" stopOpacity={0} />
+                <stop offset="0%" stopColor="var(--green)" stopOpacity={0.24} />
+                <stop offset="100%" stopColor="var(--green)" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid vertical={false} stroke="#D9D6CC" />
+            <CartesianGrid vertical={false} stroke="var(--border)" />
             <XAxis
               dataKey="month"
               tickFormatter={formatMonth}
@@ -143,7 +143,7 @@ export function EquityTimeline({
               type="monotone"
               dataKey="active"
               name="Active scenario"
-              stroke="#1F7A52"
+              stroke="var(--green)"
               strokeWidth={3}
               fill="url(#active-value-fill)"
               isAnimationActive={false}
@@ -153,7 +153,7 @@ export function EquityTimeline({
               type="monotone"
               dataKey="exercise"
               name="Exercise cost"
-              stroke="#DF7253"
+              stroke="var(--coral)"
               strokeWidth={2}
               strokeDasharray="5 5"
               dot={false}
@@ -177,7 +177,7 @@ export function EquityTimeline({
               <ReferenceLine
                 key={event.id}
                 x={event.month}
-                stroke="#7D817C"
+                stroke="var(--border-strong)"
                 strokeDasharray="2 5"
               />
             ))}

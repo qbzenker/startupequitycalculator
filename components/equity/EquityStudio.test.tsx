@@ -5,6 +5,24 @@ import { describe, expect, it } from "vitest";
 import { EquityStudio } from "./EquityStudio";
 
 describe("EquityStudio", () => {
+  it("presents one clear title, theme control, and model boundaries", () => {
+    render(<EquityStudio />);
+
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(
+      screen.getByRole("button", { name: "Toggle color theme" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("How this model works"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/pre-tax estimate and excludes liquidation preferences/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/hypothetical millions into actual anxiety/i),
+    ).not.toBeInTheDocument();
+  });
+
   it("starts with the Series A new-offer result before the assumptions", () => {
     render(<EquityStudio />);
 

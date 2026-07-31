@@ -90,6 +90,12 @@ export function useEquityStudio() {
     form.reset(toFormValues(nextInput));
   }
 
+  function resetScenario() {
+    const nextInput = getPresetInput("series-a");
+    setLastValidInput(nextInput);
+    form.reset(toFormValues(nextInput));
+  }
+
   function updateLastValidField(
     name: NumericScenarioField,
     value: number | null,
@@ -159,6 +165,7 @@ export function useEquityStudio() {
     isUsingPreviousResult: !parsed.success,
     selectPreset,
     setMode,
+    resetScenario,
     updateLastValidField,
     saveActiveScenario,
     renameSavedScenario,

@@ -1,16 +1,25 @@
 import { ThemeProvider } from "@/components/ThemeProvider";
 import type { Metadata } from "next";
-import { IBM_Plex_Sans } from "next/font/google";
+import { Manrope, Newsreader } from "next/font/google";
 import "./globals.css";
 
-const fontSans = IBM_Plex_Sans({
-	subsets: ["latin"],
-	weight: ["400", "500", "600", "700"],
+const fontSans = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  display: "swap",
+});
+
+const fontEditorial = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-newsreader",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-	title: "Startup Equity Calculator",
-	description: "Calculate the value of your startup equity",
+  metadataBase: new URL("https://whatsmyequityworth.com"),
+  title: "Equity, decoded. — Startup equity scenario studio",
+  description:
+    "Model startup equity vesting, dilution, exercise cost, and potential value across multiple scenarios.",
 };
 
 export default function RootLayout({
@@ -18,23 +27,21 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en" suppressHydrationWarning>
-			<head>
-				<meta name="apple-mobile-web-app-title" content="StartupEq" />
-			</head>
-			<body
-				className={`${fontSans.className} antialiased min-h-screen transition-colors`}
-			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-					{children}
-				</ThemeProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="apple-mobile-web-app-title" content="Equity, decoded." />
+      </head>
+      <body className={`${fontSans.variable} ${fontEditorial.variable}`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }

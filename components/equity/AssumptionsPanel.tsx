@@ -2,14 +2,13 @@
 
 import { Controller, type UseFormReturn } from "react-hook-form";
 
-import { getPresetInput } from "@/lib/equity/presets";
-
 import type { EquityScenarioFormValues } from "./useEquityStudio";
 import { NumberField } from "./NumberField";
 
 interface AssumptionsPanelProps {
   form: UseFormReturn<EquityScenarioFormValues>;
   issues: Map<string, string>;
+  onReset: () => void;
   onFieldChange: (
     name: NumericFieldName,
     value: number | null,
@@ -130,6 +129,7 @@ export function AssumptionsPanel({
   form,
   issues,
   onFieldChange,
+  onReset,
 }: AssumptionsPanelProps) {
   const mode = form.watch("mode");
 
@@ -143,7 +143,7 @@ export function AssumptionsPanel({
         <button
           type="button"
           className="text-button"
-          onClick={() => form.reset(toDefaultFormValues())}
+          onClick={onReset}
         >
           Reset
         </button>
@@ -202,8 +202,4 @@ export function AssumptionsPanel({
       </details>
     </section>
   );
-}
-
-function toDefaultFormValues(): EquityScenarioFormValues {
-  return getPresetInput("series-a");
 }
