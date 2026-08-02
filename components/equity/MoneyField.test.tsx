@@ -93,4 +93,28 @@ describe("MoneyField", () => {
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input).toHaveAccessibleDescription("Must be greater than zero");
   });
+
+  it("references shared guidance supplied by its parent group", () => {
+    render(
+      <>
+        <p id="company-value-help">
+          Use full dollars or shorthand like 120m and 1.5b.
+        </p>
+        <MoneyField
+          id="currentCompanyValue"
+          label="Company value today"
+          value={120_000_000}
+          externalDescribedBy="company-value-help"
+          onChange={vi.fn()}
+          onBlur={vi.fn()}
+        />
+      </>,
+    );
+
+    expect(
+      screen.getByLabelText("Company value today"),
+    ).toHaveAccessibleDescription(
+      "Use full dollars or shorthand like 120m and 1.5b.",
+    );
+  });
 });

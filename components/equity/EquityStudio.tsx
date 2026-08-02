@@ -27,11 +27,6 @@ export function EquityStudio() {
             one optimistic number makes the decision for you.
           </p>
         </div>
-        <div className="intro-note" aria-hidden="true">
-          <span>Model</span>
-          <strong>01</strong>
-          <small>Adjust the story. Keep the math honest.</small>
-        </div>
         <ScenarioChips
           activeId={studio.activePreset?.id}
           onSelect={studio.selectPreset}

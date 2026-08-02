@@ -28,4 +28,34 @@ describe("FieldShell", () => {
     );
     expect(input).toHaveAttribute("aria-invalid", "true");
   });
+
+  it("merges an external shared description with its own error", () => {
+    render(
+      <>
+        <p id="company-value-help">
+          Use full dollars or shorthand like 120m and 1.5b.
+        </p>
+        <FieldShell
+          id="currentCompanyValue"
+          label="Company value today"
+          externalDescribedBy="company-value-help"
+          error="Must be greater than zero"
+        >
+          {({ describedBy, invalid }) => (
+            <input
+              id="currentCompanyValue"
+              aria-describedby={describedBy}
+              aria-invalid={invalid}
+            />
+          )}
+        </FieldShell>
+      </>,
+    );
+
+    expect(
+      screen.getByLabelText("Company value today"),
+    ).toHaveAccessibleDescription(
+      "Use full dollars or shorthand like 120m and 1.5b. Must be greater than zero",
+    );
+  });
 });

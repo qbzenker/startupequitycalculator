@@ -14,6 +14,7 @@ interface MoneyFieldProps {
   onChange: (value: number | null) => void;
   onBlur: () => void;
   description?: string;
+  externalDescribedBy?: string;
   error?: string;
 }
 
@@ -24,6 +25,7 @@ export function MoneyField({
   onChange,
   onBlur,
   description,
+  externalDescribedBy,
   error,
 }: MoneyFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -53,6 +55,7 @@ export function MoneyField({
       id={id}
       label={label}
       description={description}
+      externalDescribedBy={externalDescribedBy}
       error={error}
     >
       {({ describedBy, invalid }) => (

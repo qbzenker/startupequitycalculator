@@ -268,8 +268,8 @@ a {
 .studio-intro {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.33fr);
-  gap: 22px 56px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 30px;
   padding: clamp(52px, 8vw, 96px) 0 36px;
 }
 
@@ -303,41 +303,6 @@ a {
   color: var(--ink-soft);
   font-size: clamp(16px, 2vw, 19px);
   line-height: 1.6;
-}
-
-.intro-note {
-  align-self: end;
-  min-height: 190px;
-  display: grid;
-  align-content: end;
-  padding: 20px;
-  border: 1px solid color-mix(in srgb, var(--green) 28%, var(--border));
-  border-radius: 50% 50% 20px 20px;
-  background: color-mix(in srgb, var(--green-soft) 72%, transparent);
-  color: var(--green-deep);
-}
-
-.intro-note span,
-.intro-note small {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.intro-note strong {
-  font-family: var(--font-newsreader), Georgia, serif;
-  font-size: 68px;
-  font-weight: 400;
-  line-height: 0.95;
-}
-
-.intro-note small {
-  max-width: 150px;
-  margin-top: 9px;
-  letter-spacing: 0.04em;
-  line-height: 1.4;
-  text-transform: none;
 }
 
 .scenario-strip {
@@ -772,6 +737,53 @@ a {
   margin-top: 22px;
 }
 
+.assumptions-intro {
+  max-width: 260px;
+  margin: 7px 0 0;
+  color: var(--ink-faint);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.company-value-group {
+  padding: 11px 0 14px;
+  border-top: 1px solid var(--border);
+}
+
+.company-value-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.company-value-grid .field-group {
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 9px;
+  min-height: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-muted) 72%, var(--surface));
+}
+
+.company-value-grid .field-copy label {
+  font-size: 11px;
+}
+
+.company-value-grid .field-control input {
+  min-height: 48px;
+  font-size: 16px;
+  text-align: right;
+}
+
+.company-value-help {
+  margin: 9px 1px 0;
+  color: var(--ink-faint);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
 .field-group {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(126px, 0.7fr);
@@ -981,6 +993,14 @@ a {
 
   .field-control input {
     text-align: left;
+  }
+
+  .company-value-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .company-value-grid .field-control input {
+    text-align: right;
   }
 
   .exact-value-input {
@@ -1295,10 +1315,6 @@ a {
 
   .studio-intro h1 {
     font-size: clamp(44px, 14vw, 70px);
-  }
-
-  .intro-note {
-    display: none;
   }
 
   .scenario-strip {

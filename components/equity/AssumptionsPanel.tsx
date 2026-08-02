@@ -28,6 +28,7 @@ interface ControlledFieldProps {
   issues: Map<string, string>;
   onFieldChange: AssumptionsPanelProps["onFieldChange"];
   description?: string;
+  externalDescribedBy?: string;
 }
 
 interface ControlledNumberProps extends ControlledFieldProps {
@@ -119,6 +120,7 @@ function ControlledMoneyField({
   issues,
   onFieldChange,
   description,
+  externalDescribedBy,
 }: ControlledFieldProps) {
   return (
     <Controller
@@ -129,6 +131,7 @@ function ControlledMoneyField({
           id={name}
           label={label}
           description={description}
+          externalDescribedBy={externalDescribedBy}
           value={field.value}
           error={getError(form, issues, name)}
           onChange={(value) => {
@@ -194,6 +197,9 @@ export function AssumptionsPanel({
         <div>
           <p className="eyebrow">The model underneath</p>
           <h2 id="assumptions-title">Your assumptions</h2>
+          <p className="assumptions-intro">
+            Change any assumption. Results and charts update together.
+          </p>
         </div>
         <button type="button" className="text-button" onClick={onReset}>
           Reset
@@ -234,18 +240,25 @@ export function AssumptionsPanel({
           <h3>What happens next</h3>
         </div>
         <div className="field-list">
-          <ControlledMoneyField
-            {...shared}
-            name="currentCompanyValue"
-            label="Company value today"
-            description="Enter full dollars or shorthand such as 120m."
-          />
-          <ControlledMoneyField
-            {...shared}
-            name="exitCompanyValue"
-            label="Potential exit value"
-            description="Enter full dollars or shorthand such as 1.5b."
-          />
+          <div className="company-value-group">
+            <div className="company-value-grid">
+              <ControlledMoneyField
+                {...shared}
+                name="currentCompanyValue"
+                label="Company value today"
+                externalDescribedBy="company-value-help"
+              />
+              <ControlledMoneyField
+                {...shared}
+                name="exitCompanyValue"
+                label="Potential exit value"
+                externalDescribedBy="company-value-help"
+              />
+            </div>
+            <p id="company-value-help" className="company-value-help">
+              Use full dollars or shorthand like 120m and 1.5b.
+            </p>
+          </div>
           <ControlledChoiceField
             {...shared}
             stableInput={stableInput}

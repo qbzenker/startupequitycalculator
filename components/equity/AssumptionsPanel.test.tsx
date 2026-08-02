@@ -37,4 +37,39 @@ describe("AssumptionsPanel", () => {
       }),
     ).toHaveValue("18");
   });
+
+  it("groups company values with one shared explanation", () => {
+    const { container } = render(<EquityStudio />);
+
+    const help = screen.getByText(
+      "Use full dollars or shorthand like 120m and 1.5b.",
+    );
+    const current = screen.getByLabelText("Company value today");
+    const exit = screen.getByLabelText("Potential exit value");
+    const grid = container.querySelector(".company-value-grid");
+
+    expect(grid).not.toBeNull();
+    expect(grid).toContainElement(current);
+    expect(grid).toContainElement(exit);
+    expect(
+      screen.getAllByText(
+        "Use full dollars or shorthand like 120m and 1.5b.",
+      ),
+    ).toHaveLength(1);
+    expect(current.getAttribute("aria-describedby")).toContain(help.id);
+    expect(exit.getAttribute("aria-describedby")).toContain(help.id);
+  });
+
+  it("explains assumption updates directly", () => {
+    render(<EquityStudio />);
+
+    expect(
+      screen.getByText(
+        "Change any assumption. Results and charts update together.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("Adjust the story. Keep the math honest."),
+    ).not.toBeInTheDocument();
+  });
 });
