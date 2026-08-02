@@ -4,6 +4,7 @@ import { AssumptionsPanel } from "./AssumptionsPanel";
 import { ComparisonTray } from "./ComparisonTray";
 import { EquityTimeline } from "./EquityTimeline";
 import { Methodology } from "./Methodology";
+import { MobileAssumptionSummary } from "./MobileAssumptionSummary";
 import { ResultSummary } from "./ResultSummary";
 import { ScenarioChips } from "./ScenarioChips";
 import { StudioHeader } from "./StudioHeader";
@@ -53,6 +54,7 @@ export function EquityStudio() {
               events={studio.timeline.events}
             />
           )}
+          <MobileAssumptionSummary input={studio.validInput} />
         </div>
 
         <AssumptionsPanel

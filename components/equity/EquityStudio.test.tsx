@@ -23,6 +23,20 @@ describe("EquityStudio", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("uses supported semantics for labeled visual groups", () => {
+    const { container } = render(<EquityStudio />);
+
+    expect(
+      screen.getByRole("group", { name: "Starting scenarios" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("group", { name: "Chart legend" }),
+    ).toBeInTheDocument();
+    expect(container.querySelector(".brand-lockup")).not.toHaveAttribute(
+      "aria-label",
+    );
+  });
+
   it("starts with the Series A new-offer result before the assumptions", () => {
     render(<EquityStudio />);
 
@@ -227,6 +241,38 @@ describe("EquityStudio", () => {
     ).toBeInTheDocument();
   });
 
+  it("summarizes active assumptions between the timeline and editable form", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    const timeline = screen.getByRole("region", {
+      name: "Interactive equity value over time chart",
+    });
+    const summary = screen.getByRole("region", {
+      name: "Active assumptions",
+    });
+    const assumptions = screen.getByRole("heading", {
+      name: "Your assumptions",
+    });
+
+    expect(summary).toHaveTextContent(
+      "$1.5B exit · 48 months · 2 rounds · 18% dilution each",
+    );
+    expect(
+      timeline.compareDocumentPosition(summary) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      summary.compareDocumentPosition(assumptions) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    await user.click(
+      within(summary).getByRole("button", { name: "Edit assumptions" }),
+    );
+    expect(screen.getByLabelText("Grant size")).toHaveFocus();
+  });
+
   it("saves, renames, loads, and removes comparison snapshots", async () => {
     const user = userEvent.setup();
     render(<EquityStudio />);
@@ -263,6 +309,31 @@ describe("EquityStudio", () => {
     expect(
       screen.queryByLabelText("Rename Scenario 2"),
     ).not.toBeInTheDocument();
+  });
+
+  it("keeps regenerated comparison legend and load names unique", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+    const compare = screen.getByRole("button", {
+      name: "Compare this scenario",
+    });
+
+    await user.click(compare);
+    await user.click(compare);
+    await user.click(
+      screen.getByRole("button", { name: "Remove Baseline" }),
+    );
+    await user.click(compare);
+
+    const legend = screen.getByLabelText("Chart legend");
+    expect(within(legend).getByText("Baseline")).toBeInTheDocument();
+    expect(within(legend).getByText("Scenario 2")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Load Baseline" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Load Scenario 2" }),
+    ).toBeInTheDocument();
   });
 
   it("accepts an exact custom horizon and dilution", async () => {

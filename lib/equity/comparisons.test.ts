@@ -81,6 +81,34 @@ describe("scenario comparisons", () => {
     ]);
   });
 
+  it("reuses one stable identity, name, and color slot after removal", () => {
+    const baseline = saveScenario([], DEFAULT_PRESET.input);
+    const both = saveScenario(baseline, {
+      ...DEFAULT_PRESET.input,
+      exitCompanyValue: 2_000_000_000,
+    });
+    const withoutBaseline = removeScenario(both, "saved-1");
+    const refilled = saveScenario(withoutBaseline, {
+      ...DEFAULT_PRESET.input,
+      exitCompanyValue: 3_000_000_000,
+    });
+
+    expect(
+      refilled.map(({ id, name, color }) => ({ id, name, color })),
+    ).toEqual([
+      {
+        id: "saved-2",
+        name: "Scenario 2",
+        color: "#876408",
+      },
+      {
+        id: "saved-1",
+        name: "Baseline",
+        color: "#DF7253",
+      },
+    ]);
+  });
+
   it("removes only the targeted scenario", () => {
     const first = saveScenario([], DEFAULT_PRESET.input);
     const second = saveScenario(first, {

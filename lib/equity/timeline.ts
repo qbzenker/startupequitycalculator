@@ -2,6 +2,7 @@ import {
   EquityCalculationError,
   getCompletedRoundsAtMonth,
   getDilutionFactor,
+  getFundingRoundMonths,
   getVestedSharesAtMonth,
 } from "./calculate";
 import type {
@@ -10,23 +11,19 @@ import type {
   TimelinePoint,
 } from "./types";
 
-export function getFundingRoundMonths(
-  input: EquityScenarioInput,
-): number[] {
-  return Array.from({ length: input.fundingRounds }, (_, index) =>
-    Math.round(
-      (input.exitMonths * (index + 1)) / (input.fundingRounds + 1),
-    ),
-  );
-}
+export { getFundingRoundMonths };
 
-function getTimelineMonths(exitMonths: number): number[] {
+function getTimelineMonths(
+  exitMonths: number,
+  events: readonly TimelineEvent[],
+): number[] {
   const months = new Set<number>();
 
   for (let month = 0; month <= exitMonths; month += 3) {
     months.add(month);
   }
 
+  events.forEach((event) => months.add(event.month));
   months.add(exitMonths);
   return [...months].sort((left, right) => left - right);
 }
@@ -95,7 +92,8 @@ export function generateTimeline(input: EquityScenarioInput): {
   points: TimelinePoint[];
   events: TimelineEvent[];
 } {
-  const points = getTimelineMonths(input.exitMonths).map((month) => {
+  const events = getTimelineEvents(input);
+  const points = getTimelineMonths(input.exitMonths, events).map((month) => {
     const companyValue = getCompanyValueAtMonth(input, month);
     const vestedShares = getVestedSharesAtMonth(input, month);
     const completedRounds = getCompletedRoundsAtMonth(input, month);
@@ -127,6 +125,6 @@ export function generateTimeline(input: EquityScenarioInput): {
 
   return {
     points,
-    events: getTimelineEvents(input),
+    events,
   };
 }

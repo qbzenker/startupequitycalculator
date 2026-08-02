@@ -13,7 +13,11 @@ export function ScenarioChips({
   onSelect,
 }: ScenarioChipsProps) {
   return (
-    <div className="scenario-strip" aria-label="Starting scenarios">
+    <div
+      className="scenario-strip"
+      role="group"
+      aria-label="Starting scenarios"
+    >
       {PRESETS.map((preset) => (
         <button
           key={preset.id}

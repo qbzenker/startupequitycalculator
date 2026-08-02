@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { calculateEquity } from "@/lib/equity/calculate";
@@ -48,6 +48,75 @@ describe("EquityTimeline", () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/Use arrow keys to explore/i)).toBeInTheDocument();
     expect(screen.getByText("Baseline")).toBeInTheDocument();
+  });
+
+  it("makes overflowing milestones focusable and keyboard scrollable", () => {
+    const active = makeScenario("active", "Active scenario", 1_500_000_000);
+
+    render(
+      <EquityTimeline
+        active={active}
+        comparisons={[]}
+        events={generateTimeline(active.input).events}
+      />,
+    );
+
+    const rail = screen.getByRole("list", { name: "Modeled milestones" });
+    expect(rail).toHaveAttribute("tabindex", "0");
+    expect(rail).toHaveAccessibleDescription(
+      /use left and right arrow keys to reveal later events/i,
+    );
+
+    rail.focus();
+    expect(rail).toHaveFocus();
+    fireEvent.keyDown(rail, { key: "ArrowRight" });
+    expect(rail.scrollLeft).toBe(160);
+    fireEvent.keyDown(rail, { key: "ArrowLeft" });
+    expect(rail.scrollLeft).toBe(0);
+  });
+
+  it("keeps event names in the semantic milestone list, not SVG lines", () => {
+    const active = makeScenario("active", "Active scenario", 1_500_000_000);
+    const { container } = render(
+      <EquityTimeline
+        active={active}
+        comparisons={[]}
+        events={generateTimeline(active.input).events}
+      />,
+    );
+    const rail = screen.getByRole("list", { name: "Modeled milestones" });
+
+    expect(within(rail).getByText("Funding round 1")).toBeInTheDocument();
+    expect(within(rail).getByText("Funding round 2")).toBeInTheDocument();
+    expect(container.querySelector("line[aria-label]")).toBeNull();
+  });
+
+  it("presents fractional short-horizon milestones concisely", () => {
+    const input = {
+      ...DEFAULT_PRESET.input,
+      exitMonths: 1,
+      fundingRounds: 10,
+    };
+    const active: SavedScenario = {
+      id: "active",
+      name: "Active scenario",
+      color: "#1F7A52",
+      input,
+      result: calculateEquity(input),
+      timeline: generateTimeline(input).points,
+    };
+
+    render(
+      <EquityTimeline
+        active={active}
+        comparisons={[]}
+        events={generateTimeline(input).events}
+      />,
+    );
+
+    const rail = screen.getByRole("list", { name: "Modeled milestones" });
+    expect(rail).toHaveTextContent("0.1mFunding round 1");
+    expect(rail).not.toHaveTextContent("0.090909");
   });
 });
 

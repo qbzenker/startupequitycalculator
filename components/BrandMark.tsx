@@ -1,6 +1,6 @@
 export function BrandMark() {
   return (
-    <div className="brand-lockup" aria-label="Equity, decoded.">
+    <div className="brand-lockup">
       <svg
         className="brand-mark"
         viewBox="0 0 44 44"

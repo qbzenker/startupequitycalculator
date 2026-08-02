@@ -11,12 +11,13 @@ function clampUnit(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
 
-function getFundingRoundMonth(
+export function getFundingRoundMonths(
   input: EquityScenarioInput,
-  roundIndex: number,
-): number {
-  return Math.round(
-    (input.exitMonths * roundIndex) / (input.fundingRounds + 1),
+): number[] {
+  return Array.from(
+    { length: input.fundingRounds },
+    (_, index) =>
+      (input.exitMonths * (index + 1)) / (input.fundingRounds + 1),
   );
 }
 
@@ -53,15 +54,9 @@ export function getCompletedRoundsAtMonth(
   input: EquityScenarioInput,
   month: number,
 ): number {
-  let completedRounds = 0;
-
-  for (let roundIndex = 1; roundIndex <= input.fundingRounds; roundIndex += 1) {
-    if (getFundingRoundMonth(input, roundIndex) <= month) {
-      completedRounds += 1;
-    }
-  }
-
-  return completedRounds;
+  return getFundingRoundMonths(input).filter(
+    (roundMonth) => roundMonth <= month,
+  ).length;
 }
 
 export function getDilutionFactor(

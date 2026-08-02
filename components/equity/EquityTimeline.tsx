@@ -88,11 +88,30 @@ function formatMonth(month: number): string {
     return "Today";
   }
 
-  if (month % 12 === 0) {
-    return `${month / 12}y`;
+  const roundedMonth = Math.round(month * 10) / 10;
+
+  if (Number.isInteger(roundedMonth) && roundedMonth % 12 === 0) {
+    return `${roundedMonth / 12}y`;
   }
 
-  return `${month}m`;
+  return `${roundedMonth}m`;
+}
+
+function handleMilestoneKeyDown(
+  event: React.KeyboardEvent<HTMLOListElement>,
+) {
+  const rail = event.currentTarget;
+
+  if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+    event.preventDefault();
+    rail.scrollLeft += event.key === "ArrowRight" ? 160 : -160;
+  } else if (event.key === "Home") {
+    event.preventDefault();
+    rail.scrollLeft = 0;
+  } else if (event.key === "End") {
+    event.preventDefault();
+    rail.scrollLeft = rail.scrollWidth;
+  }
 }
 
 export function TimelineTooltipContent({
@@ -164,7 +183,11 @@ export function EquityTimeline({
           <p className="eyebrow">The path, not just the payoff</p>
           <h2 id="timeline-title">Equity value over time</h2>
         </div>
-        <div className="chart-legend" aria-label="Chart legend">
+        <div
+          className="chart-legend"
+          role="group"
+          aria-label="Chart legend"
+        >
           <span className="legend-active">Net value</span>
           <span className="legend-cost">Exercise cost</span>
           {comparisons.map((scenario, index) => (
@@ -184,8 +207,9 @@ export function EquityTimeline({
       </div>
 
       <p id="timeline-instructions" className="chart-instructions">
-        Use arrow keys to explore the interactive chart. The written summary
-        below provides the same essential endpoints.
+        Use arrow keys to explore the interactive chart. Focus the milestone
+        list and use left and right arrow keys to reveal later events. The
+        written summary below provides the same essential endpoints.
       </p>
       <div
         className="timeline-chart"
@@ -269,14 +293,19 @@ export function EquityTimeline({
                 x={event.month}
                 stroke="var(--border-strong)"
                 strokeDasharray="2 5"
-                aria-label={event.label}
               />
             ))}
           </ComposedChart>
         </ResponsiveContainer>
       </div>
 
-      <ol className="event-rail" aria-label="Modeled milestones">
+      <ol
+        className="event-rail"
+        aria-label="Modeled milestones"
+        aria-describedby="timeline-instructions"
+        tabIndex={0}
+        onKeyDown={handleMilestoneKeyDown}
+      >
         {events.map((event) => (
           <li key={event.id}>
             <span>{formatMonth(event.month)}</span>

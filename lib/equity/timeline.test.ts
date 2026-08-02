@@ -9,6 +9,18 @@ describe("getFundingRoundMonths", () => {
     expect(getFundingRoundMonths(DEFAULT_PRESET.input)).toEqual([16, 32]);
   });
 
+  it("keeps every round strictly in the future for a one-month horizon", () => {
+    const months = getFundingRoundMonths({
+      ...DEFAULT_PRESET.input,
+      exitMonths: 1,
+      fundingRounds: 10,
+    });
+
+    expect(months).toHaveLength(10);
+    expect(months.every((month) => month > 0 && month <= 1)).toBe(true);
+    expect(new Set(months).size).toBe(10);
+  });
+
   it("returns no events when no future rounds are modeled", () => {
     expect(
       getFundingRoundMonths({
@@ -20,13 +32,29 @@ describe("getFundingRoundMonths", () => {
 });
 
 describe("generateTimeline", () => {
-  it("includes quarterly points from today through the exact exit", () => {
+  it("includes every quarterly point from today through the exact exit", () => {
     const { points } = generateTimeline(DEFAULT_PRESET.input);
+    const quarterlyMonths = points
+      .map((point) => point.month)
+      .filter((month) => month % 3 === 0);
 
     expect(points[0]?.month).toBe(0);
     expect(points.at(-1)?.month).toBe(48);
-    expect(points.map((point) => point.month)).toEqual([
+    expect(quarterlyMonths).toEqual([
       0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48,
+    ]);
+  });
+
+  it("adds non-quarter funding months to the chart data domain", () => {
+    const { points } = generateTimeline(DEFAULT_PRESET.input);
+
+    expect(
+      points
+        .filter((point) => point.month === 16 || point.month === 32)
+        .map(({ month, completedRounds }) => ({ month, completedRounds })),
+    ).toEqual([
+      { month: 16, completedRounds: 1 },
+      { month: 32, completedRounds: 2 },
     ]);
   });
 

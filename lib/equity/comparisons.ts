@@ -25,8 +25,8 @@ function getNextSlot(saved: readonly SavedScenario[]): number {
   return slot;
 }
 
-function getGeneratedName(saved: readonly SavedScenario[]): string {
-  return saved.length === 0 ? "Baseline" : "Scenario 2";
+function getGeneratedName(slot: number): string {
+  return slot === 1 ? "Baseline" : "Scenario 2";
 }
 
 export function saveScenario(
@@ -47,7 +47,7 @@ export function saveScenario(
     ...saved,
     {
       id: `saved-${slot}`,
-      name: providedName || getGeneratedName(saved),
+      name: providedName || getGeneratedName(slot),
       color: SNAPSHOT_COLORS[slot - 1] ?? SNAPSHOT_COLORS[0],
       input: snapshotInput,
       result: calculateEquity(snapshotInput),
