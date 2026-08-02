@@ -139,15 +139,112 @@ describe("EquityStudio", () => {
     await user.click(
       screen.getByRole("button", { name: "Existing equity" }),
     );
+    const grant = screen.getByLabelText("Grant size");
+    await user.clear(grant);
+    await user.type(grant, "10000");
+    await user.tab();
     const vested = screen.getByLabelText("Vested shares today");
     await user.clear(vested);
     await user.type(vested, "25000");
     await user.tab();
 
     expect(vested).toHaveAttribute("aria-invalid", "true");
+    const error = screen.getByText(
+      "Vested shares cannot exceed the grant",
+    );
+    expect(error).toBeInTheDocument();
+    expect(vested.getAttribute("aria-describedby")).toContain(error.id);
+    expect(grant).toHaveAttribute("aria-invalid", "false");
     expect(
-      screen.getByText("Vested shares cannot exceed the grant"),
+      screen.getAllByText("Vested shares cannot exceed the grant"),
+    ).toHaveLength(1);
+  });
+
+  it("associates a cliff relationship error with a touched vesting term", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    await user.click(screen.getByText("Vesting details"));
+    const vesting = screen.getByLabelText("Total vesting term");
+    await user.clear(vesting);
+    await user.type(vesting, "6");
+    await user.tab();
+
+    const error = screen.getByText(
+      "Cliff cannot be longer than the vesting term",
+    );
+    expect(
+      screen.getByText("Results use your last valid assumptions."),
     ).toBeInTheDocument();
+    expect(vesting).toHaveAttribute("aria-invalid", "true");
+    expect(vesting.getAttribute("aria-describedby")).toContain(error.id);
+    expect(screen.getByLabelText("Vesting cliff")).toHaveAttribute(
+      "aria-invalid",
+      "false",
+    );
+  });
+
+  it("keeps a cliff relationship error on the touched cliff", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    await user.click(screen.getByText("Vesting details"));
+    const vesting = screen.getByLabelText("Total vesting term");
+    await user.clear(vesting);
+    await user.type(vesting, "36");
+    await user.tab();
+    const cliff = screen.getByLabelText("Vesting cliff");
+    await user.clear(cliff);
+    await user.type(cliff, "60");
+    await user.tab();
+
+    const error = screen.getByText(
+      "Cliff cannot be longer than the vesting term",
+    );
+    expect(
+      screen.getByText("Results use your last valid assumptions."),
+    ).toBeInTheDocument();
+    expect(cliff).toHaveAttribute("aria-invalid", "true");
+    expect(cliff.getAttribute("aria-describedby")).toContain(error.id);
+    expect(vesting).toHaveAttribute("aria-invalid", "false");
+    expect(
+      screen.getAllByText(
+        "Cliff cannot be longer than the vesting term",
+      ),
+    ).toHaveLength(1);
+  });
+
+  it("associates a vested-shares relationship error with a touched grant", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    await user.click(
+      screen.getByRole("button", { name: "Existing equity" }),
+    );
+    await user.click(screen.getByText("Vesting details"));
+    const vested = screen.getByLabelText("Vested shares today");
+    await user.clear(vested);
+    await user.type(vested, "15000");
+    await user.tab();
+    await user.click(
+      screen.getByRole("button", { name: "Compare this scenario" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Load Baseline" }));
+
+    const grant = screen.getByLabelText("Grant size");
+    await user.clear(grant);
+    await user.type(grant, "10000");
+    await user.tab();
+
+    const error = screen.getByText(
+      "Vested shares cannot exceed the grant",
+    );
+    expect(
+      screen.getByText("Results use your last valid assumptions."),
+    ).toBeInTheDocument();
+    expect(grant).toHaveAttribute("aria-invalid", "true");
+    expect(grant.getAttribute("aria-describedby")).toContain(error.id);
+    expect(vested).toHaveAttribute("aria-invalid", "false");
   });
 
   it("supports keyboard selection of a scenario chip", async () => {

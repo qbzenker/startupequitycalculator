@@ -69,12 +69,52 @@ const REMAINING_VESTING_CHOICES = [
   { label: "4 years", value: 48 },
 ] as const;
 
+const CROSS_FIELD_RELATIONSHIPS = [
+  {
+    issueOwner: "cliffMonths",
+    peer: "vestingMonths",
+    isInvalid: (values: EquityScenarioFormValues) =>
+      typeof values.cliffMonths === "number" &&
+      typeof values.vestingMonths === "number" &&
+      values.cliffMonths > values.vestingMonths,
+  },
+  {
+    issueOwner: "vestedSharesToday",
+    peer: "grantShares",
+    isInvalid: (values: EquityScenarioFormValues) =>
+      typeof values.vestedSharesToday === "number" &&
+      typeof values.grantShares === "number" &&
+      values.vestedSharesToday > values.grantShares,
+  },
+] as const;
+
 function getError(
   form: UseFormReturn<EquityScenarioFormValues>,
   issues: Map<string, string>,
   name: NumericFieldName,
 ) {
-  return form.formState.touchedFields[name] ? issues.get(name) : undefined;
+  const touched = form.formState.touchedFields;
+
+  if (!touched[name]) {
+    return undefined;
+  }
+
+  const directIssue = issues.get(name);
+
+  if (directIssue) {
+    return directIssue;
+  }
+
+  const peerRelationship = CROSS_FIELD_RELATIONSHIPS.find(
+    (relationship) =>
+      relationship.peer === name &&
+      !touched[relationship.issueOwner] &&
+      relationship.isInvalid(form.getValues()),
+  );
+
+  return peerRelationship
+    ? issues.get(peerRelationship.issueOwner)
+    : undefined;
 }
 
 function ControlledNumberField({

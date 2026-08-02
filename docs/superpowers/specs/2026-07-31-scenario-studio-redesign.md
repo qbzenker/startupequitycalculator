@@ -141,13 +141,17 @@ companyValueAtMonth =
   currentCompanyValue × (exitValue / currentCompanyValue)^(month / exitMonth)
 ```
 
-Future rounds are evenly spaced between today and exit because the model asks for a count rather than round dates. For round `i`, where `i` starts at `1`, its event month is:
+Future rounds are evenly spaced at strictly future fractional months because
+the model asks for a count rather than round dates. For round `i`, where `i`
+starts at `1`, its event month is:
 
 ```text
-round(exitMonths × i / (fundingRounds + 1))
+exitMonths × i / (fundingRounds + 1)
 ```
 
-A dilution event is applied when its event month is reached.
+A dilution event is applied when its event month is reached. Keeping the
+fractional spacing prevents an early round from rounding back to month zero
+when the modeled exit horizon is shorter than the number of round intervals.
 
 The chart communicates a model, not historical performance. It does not imply a guaranteed smooth valuation path.
 

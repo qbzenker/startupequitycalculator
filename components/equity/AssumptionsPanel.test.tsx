@@ -61,7 +61,7 @@ describe("AssumptionsPanel", () => {
   });
 
   it("explains assumption updates directly", () => {
-    render(<EquityStudio />);
+    const { container } = render(<EquityStudio />);
 
     expect(
       screen.getByText(
@@ -71,5 +71,7 @@ describe("AssumptionsPanel", () => {
     expect(
       screen.queryByText("Adjust the story. Keep the math honest."),
     ).not.toBeInTheDocument();
+    expect(screen.queryByText("MODEL 01")).not.toBeInTheDocument();
+    expect(container.querySelector(".intro-note")).not.toBeInTheDocument();
   });
 });
