@@ -2,123 +2,176 @@
 
 import { Controller, type UseFormReturn } from "react-hook-form";
 
-import type { EquityScenarioFormValues } from "./useEquityStudio";
+import type { EquityScenarioInput } from "@/lib/equity/types";
+
+import { MoneyField } from "./MoneyField";
 import { NumberField } from "./NumberField";
+import { QuickChoiceField, type NumericChoice } from "./QuickChoiceField";
+import { SliderNumberField } from "./SliderNumberField";
+import { StepperField } from "./StepperField";
+import type { EquityScenarioFormValues } from "./useEquityStudio";
+
+type NumericFieldName = Exclude<keyof EquityScenarioFormValues, "mode">;
 
 interface AssumptionsPanelProps {
   form: UseFormReturn<EquityScenarioFormValues>;
+  stableInput: EquityScenarioInput;
   issues: Map<string, string>;
   onReset: () => void;
-  onFieldChange: (
-    name: NumericFieldName,
-    value: number | null,
-  ) => void;
+  onFieldChange: (name: NumericFieldName, value: number | null) => void;
 }
 
-type NumericFieldName = Exclude<
-  keyof EquityScenarioFormValues,
-  "mode"
->;
-
-interface FieldDefinition {
+interface ControlledFieldProps {
   name: NumericFieldName;
   label: string;
+  form: UseFormReturn<EquityScenarioFormValues>;
+  issues: Map<string, string>;
+  onFieldChange: AssumptionsPanelProps["onFieldChange"];
   description?: string;
+}
+
+interface ControlledNumberProps extends ControlledFieldProps {
   prefix?: string;
   suffix?: string;
   decimalScale?: number;
 }
 
-const ESSENTIAL_FIELDS: FieldDefinition[] = [
-  {
-    name: "grantShares",
-    label: "Grant size",
-    description: "The total options or shares in the grant.",
-  },
-  {
-    name: "strikePrice",
-    label: "Strike price",
-    description: "What you pay to exercise one option.",
-    prefix: "$",
-    decimalScale: 2,
-  },
-  {
-    name: "totalCompanyShares",
-    label: "Fully diluted company shares",
-  },
-  {
-    name: "currentCompanyValue",
-    label: "Company value today",
-    prefix: "$",
-  },
-  {
-    name: "exitCompanyValue",
-    label: "Potential exit value",
-    prefix: "$",
-  },
-  {
-    name: "exitMonths",
-    label: "Time to exit",
-    suffix: " months",
-  },
-  {
-    name: "fundingRounds",
-    label: "Future funding rounds",
-  },
-  {
-    name: "dilutionPerRound",
-    label: "Dilution per round",
-    suffix: "%",
-    decimalScale: 1,
-  },
-];
+interface ControlledChoiceProps extends ControlledFieldProps {
+  stableInput: EquityScenarioInput;
+  choices: readonly NumericChoice[];
+  suffix: string;
+}
 
-const VESTING_FIELDS: FieldDefinition[] = [
-  {
-    name: "vestingMonths",
-    label: "Total vesting term",
-    suffix: " months",
-  },
-  {
-    name: "cliffMonths",
-    label: "Vesting cliff",
-    suffix: " months",
-  },
-];
+const EXIT_CHOICES = [
+  { label: "2 years", value: 24 },
+  { label: "3 years", value: 36 },
+  { label: "4 years", value: 48 },
+  { label: "5 years", value: 60 },
+] as const;
+
+const VESTING_CHOICES = [
+  { label: "3 years", value: 36 },
+  { label: "4 years", value: 48 },
+  { label: "5 years", value: 60 },
+] as const;
+
+const CLIFF_CHOICES = [
+  { label: "None", value: 0 },
+  { label: "6 months", value: 6 },
+  { label: "12 months", value: 12 },
+] as const;
+
+const REMAINING_VESTING_CHOICES = [
+  { label: "1 year", value: 12 },
+  { label: "2 years", value: 24 },
+  { label: "3 years", value: 36 },
+  { label: "4 years", value: 48 },
+] as const;
+
+function getError(
+  form: UseFormReturn<EquityScenarioFormValues>,
+  issues: Map<string, string>,
+  name: NumericFieldName,
+) {
+  return form.formState.touchedFields[name] ? issues.get(name) : undefined;
+}
 
 function ControlledNumberField({
-  field,
+  name,
+  label,
   form,
   issues,
   onFieldChange,
-}: {
-  field: FieldDefinition;
-  form: UseFormReturn<EquityScenarioFormValues>;
-  issues: Map<string, string>;
-  onFieldChange: AssumptionsPanelProps["onFieldChange"];
-}) {
-  const touched = form.formState.touchedFields[field.name];
-  const error = touched ? issues.get(field.name) : undefined;
-
+  description,
+  prefix,
+  suffix,
+  decimalScale,
+}: ControlledNumberProps) {
   return (
     <Controller
-      name={field.name}
+      name={name}
       control={form.control}
-      render={({ field: controllerField }) => (
+      render={({ field }) => (
         <NumberField
-          id={field.name}
-          label={field.label}
-          description={field.description}
-          value={controllerField.value}
+          id={name}
+          label={label}
+          description={description}
+          value={field.value}
+          error={getError(form, issues, name)}
+          prefix={prefix}
+          suffix={suffix}
+          decimalScale={decimalScale}
           onChange={(value) => {
-            controllerField.onChange(value);
-            onFieldChange(field.name, value);
+            field.onChange(value);
+            onFieldChange(name, value);
           }}
-          onBlur={controllerField.onBlur}
-          prefix={field.prefix}
-          suffix={field.suffix}
-          decimalScale={field.decimalScale}
-          error={error}
+          onBlur={field.onBlur}
+        />
+      )}
+    />
+  );
+}
+
+function ControlledMoneyField({
+  name,
+  label,
+  form,
+  issues,
+  onFieldChange,
+  description,
+}: ControlledFieldProps) {
+  return (
+    <Controller
+      name={name}
+      control={form.control}
+      render={({ field }) => (
+        <MoneyField
+          id={name}
+          label={label}
+          description={description}
+          value={field.value}
+          error={getError(form, issues, name)}
+          onChange={(value) => {
+            field.onChange(value);
+            onFieldChange(name, value);
+          }}
+          onBlur={field.onBlur}
+        />
+      )}
+    />
+  );
+}
+
+function ControlledChoiceField({
+  name,
+  label,
+  form,
+  stableInput,
+  issues,
+  onFieldChange,
+  description,
+  choices,
+  suffix,
+}: ControlledChoiceProps) {
+  return (
+    <Controller
+      name={name}
+      control={form.control}
+      render={({ field }) => (
+        <QuickChoiceField
+          id={name}
+          label={label}
+          description={description}
+          value={field.value}
+          stableValue={stableInput[name]}
+          choices={choices}
+          suffix={suffix}
+          error={getError(form, issues, name)}
+          onChange={(value) => {
+            field.onChange(value);
+            onFieldChange(name, value);
+          }}
+          onBlur={field.onBlur}
         />
       )}
     />
@@ -127,11 +180,13 @@ function ControlledNumberField({
 
 export function AssumptionsPanel({
   form,
+  stableInput,
   issues,
   onFieldChange,
   onReset,
 }: AssumptionsPanelProps) {
   const mode = form.watch("mode");
+  const shared = { form, issues, onFieldChange };
 
   return (
     <section className="assumptions-panel" aria-labelledby="assumptions-title">
@@ -140,64 +195,149 @@ export function AssumptionsPanel({
           <p className="eyebrow">The model underneath</p>
           <h2 id="assumptions-title">Your assumptions</h2>
         </div>
-        <button
-          type="button"
-          className="text-button"
-          onClick={onReset}
-        >
+        <button type="button" className="text-button" onClick={onReset}>
           Reset
         </button>
       </div>
 
-      <div className="field-list">
-        {ESSENTIAL_FIELDS.map((field) => (
+      <div className="assumption-section">
+        <div className="assumption-section-heading">
+          <p className="assumption-section-index">01</p>
+          <h3>Your grant</h3>
+        </div>
+        <div className="field-list">
           <ControlledNumberField
-            key={field.name}
-            field={field}
-            form={form}
-            issues={issues}
-            onFieldChange={onFieldChange}
-          />
-        ))}
-      </div>
-
-      {mode === "existing-equity" ? (
-        <div className="field-list mode-specific-fields">
-          <ControlledNumberField
-            field={{
-              name: "vestedSharesToday",
-              label: "Vested shares today",
-              description: "Shares you could exercise right now.",
-            }}
-            form={form}
-            issues={issues}
-            onFieldChange={onFieldChange}
+            {...shared}
+            name="grantShares"
+            label="Grant size"
+            description="The total options or shares in the grant."
           />
           <ControlledNumberField
-            field={{
-              name: "remainingVestingMonths",
-              label: "Remaining vesting",
-              suffix: " months",
-            }}
-            form={form}
-            issues={issues}
-            onFieldChange={onFieldChange}
+            {...shared}
+            name="strikePrice"
+            label="Strike price"
+            description="What you pay to exercise one option."
+            prefix="$"
+            decimalScale={2}
+          />
+          <ControlledNumberField
+            {...shared}
+            name="totalCompanyShares"
+            label="Fully diluted company shares"
           />
         </div>
-      ) : null}
+      </div>
+
+      <div className="assumption-section">
+        <div className="assumption-section-heading">
+          <p className="assumption-section-index">02</p>
+          <h3>What happens next</h3>
+        </div>
+        <div className="field-list">
+          <ControlledMoneyField
+            {...shared}
+            name="currentCompanyValue"
+            label="Company value today"
+            description="Enter full dollars or shorthand such as 120m."
+          />
+          <ControlledMoneyField
+            {...shared}
+            name="exitCompanyValue"
+            label="Potential exit value"
+            description="Enter full dollars or shorthand such as 1.5b."
+          />
+          <ControlledChoiceField
+            {...shared}
+            stableInput={stableInput}
+            name="exitMonths"
+            label="Time to exit"
+            choices={EXIT_CHOICES}
+            suffix=" months"
+          />
+          <Controller
+            name="fundingRounds"
+            control={form.control}
+            render={({ field }) => (
+              <StepperField
+                id="fundingRounds"
+                label="Future funding rounds"
+                value={field.value}
+                stableValue={stableInput.fundingRounds}
+                min={0}
+                max={10}
+                step={1}
+                error={getError(form, issues, "fundingRounds")}
+                onChange={(value) => {
+                  field.onChange(value);
+                  onFieldChange("fundingRounds", value);
+                }}
+                onBlur={field.onBlur}
+              />
+            )}
+          />
+          <Controller
+            name="dilutionPerRound"
+            control={form.control}
+            render={({ field }) => (
+              <SliderNumberField
+                id="dilutionPerRound"
+                label="Dilution per round"
+                sliderLabel="Adjust dilution per round"
+                value={field.value}
+                stableValue={stableInput.dilutionPerRound}
+                min={0}
+                max={99.9}
+                step={0.1}
+                suffix="%"
+                error={getError(form, issues, "dilutionPerRound")}
+                onChange={(value) => {
+                  field.onChange(value);
+                  onFieldChange("dilutionPerRound", value);
+                }}
+                onBlur={field.onBlur}
+              />
+            )}
+          />
+        </div>
+      </div>
 
       <details className="advanced-assumptions">
-        <summary>Vesting & cap table details</summary>
+        <summary>Vesting details</summary>
         <div className="field-list">
-          {VESTING_FIELDS.map((field) => (
-            <ControlledNumberField
-              key={field.name}
-              field={field}
-              form={form}
-              issues={issues}
-              onFieldChange={onFieldChange}
-            />
-          ))}
+          <ControlledChoiceField
+            {...shared}
+            stableInput={stableInput}
+            name="vestingMonths"
+            label="Total vesting term"
+            choices={VESTING_CHOICES}
+            suffix=" months"
+          />
+          <ControlledChoiceField
+            {...shared}
+            stableInput={stableInput}
+            name="cliffMonths"
+            label="Vesting cliff"
+            choices={CLIFF_CHOICES}
+            suffix=" months"
+          />
+          {mode === "existing-equity" ? (
+            <>
+              <ControlledNumberField
+                {...shared}
+                name="vestedSharesToday"
+                label="Vested shares today"
+                description="Shares you could exercise right now."
+              />
+              <ControlledChoiceField
+                {...shared}
+                stableInput={stableInput}
+                name="remainingVestingMonths"
+                label="Remaining vesting"
+                choices={REMAINING_VESTING_CHOICES}
+                suffix=" months"
+              />
+            </>
+          ) : null}
         </div>
       </details>
     </section>

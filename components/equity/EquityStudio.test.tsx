@@ -254,7 +254,7 @@ describe("EquityStudio", () => {
       screen.getByRole("button", { name: "Load Downside" }),
     );
     expect(screen.getByLabelText("Potential exit value")).toHaveValue(
-      "$1,500,000,000",
+      "$1,500,000,000.00",
     );
 
     await user.click(
@@ -263,6 +263,117 @@ describe("EquityStudio", () => {
     expect(
       screen.queryByLabelText("Rename Scenario 2"),
     ).not.toBeInTheDocument();
+  });
+
+  it("accepts an exact custom horizon and dilution", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    const exitMonths = screen.getByLabelText("Time to exit");
+    await user.clear(exitMonths);
+    await user.type(exitMonths, "43");
+
+    const dilution = screen.getByLabelText("Dilution per round");
+    await user.clear(dilution);
+    await user.type(dilution, "17.5");
+
+    expect(exitMonths).toHaveValue("43 months");
+    expect(dilution).toHaveValue("17.5%");
+    expect(
+      screen.getByRole("button", { name: "Custom scenario" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.queryByText("Results use your last valid assumptions."),
+    ).not.toBeInTheDocument();
+  });
+
+  it("parses company value shorthand into the active scenario", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    const exitValue = screen.getByLabelText("Potential exit value");
+    await user.clear(exitValue);
+    await user.type(exitValue, "2b");
+    await user.tab();
+
+    expect(exitValue).toHaveValue("$2,000,000,000.00");
+    expect(
+      screen.getByRole("button", { name: "Custom scenario" }),
+    ).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("synchronizes semantic controls when reset restores Series A", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Increase future funding rounds",
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: "Reset" }));
+
+    expect(screen.getByLabelText("Future funding rounds")).toHaveValue("2");
+    expect(
+      screen.getByRole("slider", {
+        name: "Adjust dilution per round",
+      }),
+    ).toHaveValue("18");
+    expect(
+      within(
+        screen.getByRole("group", {
+          name: "Time to exit common values",
+        }),
+      ).getByRole("button", { name: "4 years" }),
+    ).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("shows existing-equity vesting controls in the details section", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    await user.click(
+      screen.getByRole("button", { name: "Existing equity" }),
+    );
+    await user.click(screen.getByText("Vesting details"));
+
+    expect(screen.getByLabelText("Vested shares today")).toHaveValue("0");
+    expect(
+      screen.getByRole("group", {
+        name: "Remaining vesting common values",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("restores every semantic representation when loading a snapshot", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    await user.click(
+      screen.getByRole("button", { name: "Compare this scenario" }),
+    );
+    await user.click(
+      screen.getByRole("button", {
+        name: "Increase future funding rounds",
+      }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Load Baseline" }),
+    );
+
+    expect(screen.getByLabelText("Future funding rounds")).toHaveValue("2");
+    expect(
+      screen.getByRole("slider", {
+        name: "Adjust dilution per round",
+      }),
+    ).toHaveValue("18");
+    expect(
+      within(
+        screen.getByRole("group", {
+          name: "Time to exit common values",
+        }),
+      ).getByRole("button", { name: "4 years" }),
+    ).toHaveAttribute("aria-pressed", "true");
   });
 
   it("announces the three-visible-scenario limit", async () => {

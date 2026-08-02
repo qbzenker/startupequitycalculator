@@ -57,6 +57,7 @@ export function EquityStudio() {
 
         <AssumptionsPanel
           form={studio.form}
+          stableInput={studio.validInput}
           issues={studio.issues}
           onReset={studio.resetScenario}
           onFieldChange={studio.updateLastValidField}
