@@ -1,52 +1,77 @@
-# 🚀 Startup Equity Calculator
+# Equity, decoded.
 
-_Because spreadsheets weren't made for unicorn dreams_ 🦄
+A mobile-first scenario studio for understanding a startup equity grant. It
+turns the headline percentage into a fuller picture: vesting, dilution,
+exercise cost, ownership at exit, and potential pre-tax value over time.
 
-## What is this?
+## What it models
 
-A calculator that turns your hypothetical millions into actual anxiety! This tool helps founders, employees, and investors visualize the potential value of their startup equity grants across different scenarios.
+- **New offers and existing equity.** Start from a proposed grant or include
+  shares that have already vested.
+- **Useful starting scenarios.** Try Early employee, Series A typical, Growth
+  stage, or Conservative case, then edit any assumption.
+- **Vesting over time.** New grants model a cliff followed by linear vesting;
+  existing grants model the remaining unvested balance.
+- **Future dilution.** Financing rounds are distributed across the selected
+  time horizon and reduce ownership by the chosen percentage per round.
+- **Exercise cost and net value.** Gross equity value and exercise cost are
+  modeled separately so negative outcomes remain visible.
+- **Scenario comparison.** Keep the active scenario beside as many as two
+  named snapshots and compare their curves and exit outcomes.
+- **Accessible chart context.** Every chart includes milestone markers and an
+  equivalent written summary for its current and exit endpoints.
+- **Fast, exact assumptions.** Common time horizons are one tap away, funding
+  rounds use a bounded stepper, dilution is directly explorable, and company
+  values accept full dollars or shorthand such as `120m` and `1.5b`.
 
-Ever wondered what your 0.1% equity might be worth if your company becomes the next unicorn? Or perhaps you're just trying to justify working 80-hour weeks? Look no further!
+## Model boundaries
 
-## Features
+This is an educational, pre-tax estimate—not a valuation, forecast, or
+financial recommendation. It excludes liquidation preferences, taxes,
+transaction costs, secondary-sale discounts, changing exercise windows, and
+the many rights that can differ by security and financing agreement.
 
-- **Equity Value Calculation**: Input your grant details and see what your shares might be worth (or not worth)
-- **Multiple Scenarios**: Model different exit valuations because optimism comes in many sizes
-- **Vesting Schedule Visualization**: Watch your theoretical wealth accumulate over time
-- **Mobile Friendly**: Daydream about your paper fortune while commuting on the bus
-- **Dark Mode**: For when the reality of your equity value is too harsh in the light
+Company value is interpolated between the current and exit assumptions for
+visualization. Financing rounds are evenly spaced across the time horizon.
+Real company value and financing events do not behave this smoothly.
 
-## Why I Built This
+## Development
 
-I got tired of building the same spreadsheet over and over again every time I joined a startup or had a friend ask me "is this equity grant worth anything?" The answer is always "probably not, but maybe!" - now with `text-6xl` numbers!
+The project uses [Bun](https://bun.sh/) and Next.js App Router.
+
+```bash
+bun install
+bun run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+Quality commands:
+
+```bash
+bun run test:run   # Vitest unit and component tests
+bun run lint       # Next.js ESLint rules
+bun run typecheck  # TypeScript without emitting files
+bun run build      # Production Next.js build
+bun run check      # All four gates in sequence
+```
+
+## Dependency policy
+
+Direct dependencies are pinned to the newest mutually compatible stable
+versions reviewed on July 31, 2026. Two development-tool exceptions are
+intentional:
+
+- TypeScript is pinned to `6.0.3`; TypeScript `7.0.2` is not yet supported by
+  the `typescript-eslint` version bundled with `eslint-config-next@16.2.12`.
+- ESLint is pinned to the latest v9 release, `9.39.5`; ESLint `10.8.0` removes
+  context APIs still used by the React lint plugin bundled with
+  `eslint-config-next@16.2.12`.
 
 ## Contributing
 
-Found a bug? Have a feature request? Want to add more taglines? Contributions are welcome!
+Run `bun run check` before opening a pull request. Calculation changes should
+begin with focused tests under `lib/equity`; interaction changes should extend
+`components/equity/EquityStudio.test.tsx`.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-Feel free to copy all the AI-generated code you want. Claude wrote most of it anyway, and it's probably better than what I would have come up with. If you build the next billion-dollar startup using this calculator, I accept thank-you notes and small percentages of equity (preferably fully-vested).
-
-## Disclaimer
-
-This calculator is for entertainment and educational purposes only. Any resemblance to actual startup outcomes is purely coincidental. Past performance is not indicative of future results. Your equity may be worth nothing. Or billions. Probably nothing though.
-
-## Acknowledgements
-
-- Shoutout to Claude for writing this README and most of the clever taglines
-- Special thanks to caffeine and optimism, the two core fuels of the startup ecosystem
-
----
-
-_Made with optimism by [qbzenker](https://github.com/qbzenker)_
-
-_Converting sweat equity into sweet equity since 2024_ 💸
+MIT licensed. Contributions and careful critiques of the model are welcome.

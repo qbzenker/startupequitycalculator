@@ -1,9 +1,9 @@
 export const siteConfig = {
-	name: "whatsmyequityworth.com",
-	url: "https://whatsmyequityworth.com",
-	description:
-		"Whats My Startup Equity Worth? Calculate your equity value in seconds.",
-	baseLinks: {
-		home: "/",
-	},
+  name: "Equity, decoded.",
+  url: "https://whatsmyequityworth.com",
+  description:
+    "A startup equity scenario studio for vesting, dilution, and potential outcomes.",
+  baseLinks: {
+    home: "/",
+  },
 };
