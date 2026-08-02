@@ -20,5 +20,7 @@ export function parseMoneyDraft(draft: string): number | null {
   const suffix = match[2] as keyof typeof MONEY_MULTIPLIERS | undefined;
   const value = amount * (suffix ? MONEY_MULTIPLIERS[suffix] : 1);
 
-  return Number.isFinite(value) ? value : null;
+  return Number.isFinite(value)
+    ? Math.round((value + Number.EPSILON) * 100) / 100
+    : null;
 }

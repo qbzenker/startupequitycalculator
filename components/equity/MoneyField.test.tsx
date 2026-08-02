@@ -26,7 +26,54 @@ describe("MoneyField", () => {
     expect(onChange).toHaveBeenLastCalledWith(2_250_000_000);
 
     await user.tab();
-    expect(input).toHaveValue("$2,250,000,000");
+    expect(input).toHaveValue("$2,250,000,000.00");
+    expect(onBlur).toHaveBeenCalledOnce();
+  });
+
+  it("preserves base-dollar cents when formatting on blur", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+
+    render(
+      <MoneyField
+        id="currentCompanyValue"
+        label="Company value today"
+        value={0}
+        onChange={onChange}
+        onBlur={vi.fn()}
+      />,
+    );
+
+    const input = screen.getByLabelText("Company value today");
+    await user.clear(input);
+    await user.type(input, "1.5");
+    expect(onChange).toHaveBeenLastCalledWith(1.5);
+
+    await user.tab();
+    expect(input).toHaveValue("$1.50");
+  });
+
+  it("uses an external value update that arrives while editing", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const onBlur = vi.fn();
+    const props = {
+      id: "exitCompanyValue",
+      label: "Potential exit value",
+      onChange,
+      onBlur,
+    };
+    const { rerender } = render(<MoneyField {...props} value={1} />);
+
+    const input = screen.getByLabelText("Potential exit value");
+    await user.clear(input);
+    await user.type(input, "2.25");
+    expect(onChange).toHaveBeenLastCalledWith(2.25);
+
+    rerender(<MoneyField {...props} value={3.5} />);
+    await user.tab();
+
+    expect(input).toHaveValue("$3.50");
     expect(onBlur).toHaveBeenCalledOnce();
   });
 

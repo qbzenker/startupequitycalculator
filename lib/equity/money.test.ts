@@ -13,6 +13,10 @@ describe("parseMoneyDraft", () => {
     expect(parseMoneyDraft(draft)).toBe(expected);
   });
 
+  it("rounds base-dollar values to cents", () => {
+    expect(parseMoneyDraft("1.235")).toBe(1.24);
+  });
+
   it.each(["", "$", "1.2t", "money", "-4m"])(
     "returns null for incomplete or unsupported input %s",
     (draft) => {

@@ -5,6 +5,13 @@ const wholeCurrencyFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
+const centsCurrencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
 const shareFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
@@ -17,6 +24,10 @@ const ownershipFormatter = new Intl.NumberFormat("en-US", {
 
 export function formatCurrency(value: number): string {
   return wholeCurrencyFormatter.format(value);
+}
+
+export function formatCurrencyToCents(value: number): string {
+  return centsCurrencyFormatter.format(value);
 }
 
 export function formatCompactCurrency(value: number): string {
