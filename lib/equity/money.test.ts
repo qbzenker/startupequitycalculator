@@ -9,12 +9,15 @@ describe("parseMoneyDraft", () => {
     ["120m", 120_000_000],
     ["1.2B", 1_200_000_000],
     [" 1.5 b ", 1_500_000_000],
-  ])("parses %s as base dollars", (draft, expected) => {
+    ["12.75", 13],
+    ["$120,000,000.49", 120_000_000],
+    ["1.2345b", 1_234_500_000],
+  ])("parses %s as whole base dollars", (draft, expected) => {
     expect(parseMoneyDraft(draft)).toBe(expected);
   });
 
-  it("rounds base-dollar values to cents", () => {
-    expect(parseMoneyDraft("1.235")).toBe(1.24);
+  it("rounds after applying shorthand", () => {
+    expect(parseMoneyDraft("0.0000015m")).toBe(2);
   });
 
   it.each(["", "$", "1.2t", "money", "-4m"])(

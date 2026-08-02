@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import { formatCurrencyToCents } from "@/lib/equity/format";
+import { formatCurrency } from "@/lib/equity/format";
 import { parseMoneyDraft } from "@/lib/equity/money";
 
 import { FieldShell } from "./FieldShell";
@@ -45,7 +45,7 @@ export function MoneyField({
 
     pendingExternalValue.current = undefined;
     lastEmittedValue.current = value;
-    inputRef.current.value = value === null ? "" : formatCurrencyToCents(value);
+    inputRef.current.value = value === null ? "" : formatCurrency(value);
   }, [value]);
 
   return (
@@ -60,7 +60,7 @@ export function MoneyField({
           ref={inputRef}
           id={id}
           name={id}
-          defaultValue={value === null ? "" : formatCurrencyToCents(value)}
+          defaultValue={value === null ? "" : formatCurrency(value)}
           inputMode="decimal"
           aria-invalid={invalid ? "true" : "false"}
           aria-describedby={describedBy}
@@ -81,11 +81,11 @@ export function MoneyField({
             if (externalValue !== undefined) {
               lastEmittedValue.current = externalValue;
               event.currentTarget.value =
-                externalValue === null ? "" : formatCurrencyToCents(externalValue);
+                externalValue === null ? "" : formatCurrency(externalValue);
             } else {
               const parsed = parseMoneyDraft(event.currentTarget.value);
               if (parsed !== null) {
-                event.currentTarget.value = formatCurrencyToCents(parsed);
+                event.currentTarget.value = formatCurrency(parsed);
               }
             }
             onBlur();

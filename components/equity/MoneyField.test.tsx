@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { MoneyField } from "./MoneyField";
 
 describe("MoneyField", () => {
-  it("accepts shorthand and formats base dollars on blur", async () => {
+  it("accepts shorthand and formats whole dollars on blur", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     const onBlur = vi.fn();
@@ -26,11 +26,11 @@ describe("MoneyField", () => {
     expect(onChange).toHaveBeenLastCalledWith(2_250_000_000);
 
     await user.tab();
-    expect(input).toHaveValue("$2,250,000,000.00");
+    expect(input).toHaveValue("$2,250,000,000");
     expect(onBlur).toHaveBeenCalledOnce();
   });
 
-  it("preserves base-dollar cents when formatting on blur", async () => {
+  it("rounds plain-dollar decimals on change and blur", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
@@ -46,11 +46,11 @@ describe("MoneyField", () => {
 
     const input = screen.getByLabelText("Company value today");
     await user.clear(input);
-    await user.type(input, "1.5");
-    expect(onChange).toHaveBeenLastCalledWith(1.5);
+    await user.type(input, "12.75");
+    expect(onChange).toHaveBeenLastCalledWith(13);
 
     await user.tab();
-    expect(input).toHaveValue("$1.50");
+    expect(input).toHaveValue("$13");
   });
 
   it("uses an external value update that arrives while editing", async () => {
@@ -68,12 +68,12 @@ describe("MoneyField", () => {
     const input = screen.getByLabelText("Potential exit value");
     await user.clear(input);
     await user.type(input, "2.25");
-    expect(onChange).toHaveBeenLastCalledWith(2.25);
+    expect(onChange).toHaveBeenLastCalledWith(2);
 
     rerender(<MoneyField {...props} value={3.5} />);
     await user.tab();
 
-    expect(input).toHaveValue("$3.50");
+    expect(input).toHaveValue("$4");
     expect(onBlur).toHaveBeenCalledOnce();
   });
 

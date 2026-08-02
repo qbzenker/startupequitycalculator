@@ -300,7 +300,7 @@ describe("EquityStudio", () => {
       screen.getByRole("button", { name: "Load Downside" }),
     );
     expect(screen.getByLabelText("Potential exit value")).toHaveValue(
-      "$1,500,000,000.00",
+      "$1,500,000,000",
     );
 
     await user.click(
@@ -367,10 +367,25 @@ describe("EquityStudio", () => {
     await user.type(exitValue, "2b");
     await user.tab();
 
-    expect(exitValue).toHaveValue("$2,000,000,000.00");
+    expect(exitValue).toHaveValue("$2,000,000,000");
     expect(
       screen.getByRole("button", { name: "Custom scenario" }),
     ).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("rounds plain-dollar company values without adding cents", async () => {
+    const user = userEvent.setup();
+    render(<EquityStudio />);
+
+    const currentValue = screen.getByLabelText("Company value today");
+    await user.clear(currentValue);
+    await user.type(currentValue, "12.75");
+    await user.tab();
+
+    expect(currentValue).toHaveValue("$13");
+    expect(
+      screen.queryByText("Results use your last valid assumptions."),
+    ).not.toBeInTheDocument();
   });
 
   it("synchronizes semantic controls when reset restores Series A", async () => {
