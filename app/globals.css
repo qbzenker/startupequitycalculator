@@ -833,6 +833,165 @@ a {
   text-align: right;
 }
 
+.assumption-section + .assumption-section {
+  margin-top: 28px;
+}
+
+.assumption-section-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-strong);
+}
+
+.assumption-section-heading h3,
+.assumption-section-index {
+  margin: 0;
+}
+
+.assumption-section-heading h3 {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.assumption-section-index {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.field-group-rich {
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.choice-field,
+.slider-number-field {
+  display: grid;
+  gap: 10px;
+}
+
+.quick-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.quick-choices button {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.quick-choices button[aria-pressed="true"] {
+  border-color: var(--green);
+  background: var(--green);
+  color: var(--surface);
+}
+
+.exact-value-input {
+  max-width: 180px;
+  margin-left: auto;
+}
+
+.stepper-field {
+  display: grid;
+  grid-template-columns: 44px minmax(88px, 1fr) 44px;
+  gap: 7px;
+}
+
+.stepper-field button {
+  width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-muted);
+  color: var(--green);
+  cursor: pointer;
+  font-size: 19px;
+}
+
+.stepper-field button:disabled {
+  color: var(--ink-faint);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.stepper-value {
+  text-align: center;
+}
+
+.slider-number-field input[type="range"] {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+.slider-scale {
+  position: relative;
+  height: 12px;
+  color: var(--ink-faint);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
+
+.slider-scale span {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.slider-scale span:first-child {
+  transform: none;
+}
+
+.slider-scale span:last-child {
+  transform: none;
+}
+
+@media (max-width: 700px) {
+  .field-group,
+  .field-group-rich {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .field-control input {
+    text-align: left;
+  }
+
+  .exact-value-input {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+  }
+
+  .quick-choices button {
+    flex: 1 1 calc(50% - 7px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-choices button,
+  .stepper-field button {
+    transition-duration: 0.01ms;
+  }
+}
+
 .mode-specific-fields {
   margin-top: 0;
 }

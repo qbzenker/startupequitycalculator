@@ -20,6 +20,9 @@ exercise cost, ownership at exit, and potential pre-tax value over time.
   named snapshots and compare their curves and exit outcomes.
 - **Accessible chart context.** Every chart includes milestone markers and an
   equivalent written summary for its current and exit endpoints.
+- **Fast, exact assumptions.** Common time horizons are one tap away, funding
+  rounds use a bounded stepper, dilution is directly explorable, and company
+  values accept full dollars or shorthand such as `120m` and `1.5b`.
 
 ## Model boundaries
 
